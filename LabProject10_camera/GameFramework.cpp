@@ -19,8 +19,6 @@ CGameFramework::CGameFramework()
 
 	m_pd3dDepthStencilBuffer = NULL;
 	m_pd3dDepthStencilView = NULL;
-
-
 }
 
 CGameFramework::~CGameFramework()
@@ -272,7 +270,7 @@ void CGameFramework::BuildObjects()
 
 	CAirplanePlayer *pAirplanePlyer = new CAirplanePlayer(m_pd3dDevice);
 	//플레이어의 카메라를 스페이스-쉽 카메라로 변경한다.
-	pAirplanePlyer->ChangeCamera(m_pd3dDevice, SPACESHIP_CAMERA, m_GameTimer.GetTimeElapsed());
+	pAirplanePlyer->ChangeCamera(m_pd3dDevice, THIRD_PERSON_CAMERA, m_GameTimer.GetTimeElapsed());
 
 	CCamera *pCamera = pAirplanePlyer->GetCamera();
 	pCamera->SetViewport(m_pd3dDeviceContext, 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);

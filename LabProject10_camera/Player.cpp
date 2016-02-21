@@ -141,29 +141,6 @@ void CPlayer::Rotate(float x, float y, float z)
 			D3DXVec3TransformNormal(&m_d3dxvRight, &m_d3dxvRight, &mtxRotate);
 		}
 	}
-	else if (nCurrentCameraMode == SPACESHIP_CAMERA)
-	{
-		/*스페이스-쉽 카메라에서 플레이어의 회전은 회전 각도의 제한이 없다. 그리고 모든 축을 중심으로 회전을 할 수 있다.*/
-		m_pCamera->Rotate(x, y, z);
-		if (x != 0.0f)
-		{
-			D3DXMatrixRotationAxis(&mtxRotate, &m_d3dxvRight, (float)D3DXToRadian(x));
-			D3DXVec3TransformNormal(&m_d3dxvLook, &m_d3dxvLook, &mtxRotate);
-			D3DXVec3TransformNormal(&m_d3dxvUp, &m_d3dxvUp, &mtxRotate);
-		}
-		if (y != 0.0f)
-		{
-			D3DXMatrixRotationAxis(&mtxRotate, &m_d3dxvUp, (float)D3DXToRadian(y));
-			D3DXVec3TransformNormal(&m_d3dxvLook, &m_d3dxvLook, &mtxRotate);
-			D3DXVec3TransformNormal(&m_d3dxvRight, &m_d3dxvRight, &mtxRotate);
-		}
-		if (z != 0.0f)
-		{
-			D3DXMatrixRotationAxis(&mtxRotate, &m_d3dxvLook, (float)D3DXToRadian(z));
-			D3DXVec3TransformNormal(&m_d3dxvUp, &m_d3dxvUp, &mtxRotate);
-			D3DXVec3TransformNormal(&m_d3dxvRight, &m_d3dxvRight, &mtxRotate);
-		}
-	}
 
 	// 회전으로 인해 플레이어의 로컬 x-축, y-축, z-축이 서로 직교하지 않을 수 있으므로
 	// z-축(LookAt 벡터)을 기준으로 하여 서로 직교하고 단위벡터가 되도록 한다.
@@ -237,33 +214,8 @@ CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, DWORD nNewCameraMode,
 	case THIRD_PERSON_CAMERA:
 		pNewCamera = new CThirdPersonCamera(m_pCamera);
 		break;
-	case SPACESHIP_CAMERA:
-		pNewCamera = new CSpaceShipCamera(m_pCamera);
-		break;
 	}
 	
-	if (nCurrentCameraMode == SPACESHIP_CAMERA)
-	{
-		m_d3dxvUp = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-		m_d3dxvRight.y = 0.0f;
-		m_d3dxvLook.y = 0.0f;
-		D3DXVec3Normalize(&m_d3dxvRight, &m_d3dxvRight);
-		D3DXVec3Normalize(&m_d3dxvLook, &m_d3dxvLook);
-		m_fPitch = 0.0f;
-		m_fRoll = 0.0f;
-		// Look 벡터와 월드좌표계의 z-축(0, 0, 1)이 이루는 각도(내적=cos)를 계산하여 플레이어의 y-축의 회전 각도 m_fYaw로 설정한다.
-		m_fYaw = (float)D3DXToDegree(acosf(D3DXVec3Dot(&D3DXVECTOR3(0.0f, 0.0f, 1.0f), &m_d3dxvLook)));
-		if (m_d3dxvLook.x < 0.0f) m_fYaw = -m_fYaw;
-	}
-	else if ((nNewCameraMode == SPACESHIP_CAMERA) && m_pCamera)
-	{
-		// 새로운 카메라의 모드가 스페이스-쉽 모드의 카메라이고 현재 카메라 모드가 1인칭 또는 3인칭 카메라이면
-		// 플레이어의 로컬 축을 현재 카메라의 로컬 축과 같게 만든다.*
-		m_d3dxvRight = m_pCamera->GetRightVector();
-		m_d3dxvUp = m_pCamera->GetUpVector();
-		m_d3dxvLook = m_pCamera->GetLookVector();
-	}
-
 	if (pNewCamera)
 	{
 		//기존 카메라가 없으면 새로운 카메라를 위한 쉐이더 변수를 생성한다.
@@ -336,17 +288,6 @@ void CAirplanePlayer::ChangeCamera(ID3D11Device *pd3dDevice, DWORD nNewCameraMod
 	if (nCurrentCameraMode == nNewCameraMode) return;
 	switch (nNewCameraMode)
 	{
-	case SPACESHIP_CAMERA:
-		//플레이어의 특성을 스페이스-쉽 카메라 모드에 맞게 변경한다. 중력은 적용하지 않는다.
-		SetFriction(125.0f);
-		SetGravity(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-		SetMaxVelocityXZ(400.0f);
-		SetMaxVelocityY(400.0f);
-		m_pCamera = OnChangeCamera(pd3dDevice, SPACESHIP_CAMERA, nCurrentCameraMode);
-		m_pCamera->SetTimeLag(0.0f);
-		m_pCamera->SetOffset(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-		m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
-		break;
 	case THIRD_PERSON_CAMERA:
 		//플레이어의 특성을 3인칭 카메라 모드에 맞게 변경한다. 지연 효과와 카메라 오프셋을 설정한다.
 		SetFriction(250.0f);
