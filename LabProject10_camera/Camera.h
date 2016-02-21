@@ -1,7 +1,7 @@
 #pragma once
 
 //카메라의 종류(모드: Mode)를 나타내는 상수를 다음과 같이 선언한다.
-#define THIRD_PERSON_CAMERA	0x03
+#define THIRD_PERSON_CAMERA	0x01
 
 //프레임 버퍼의 크기와 종횡비(Aspect Ratio)를 나타내는 상수를 다음과 같이 선언한다.
 #define FRAME_BUFFER_WIDTH	640
@@ -18,7 +18,6 @@ struct VS_CB_VIEWPROJECTION_MATRIX
 class CCamera
 {
 public:
-	//CCamera 클래스의 기본 생성자를 다음과 같이 변경한다.
 	CCamera();
 	~CCamera();
 
@@ -61,8 +60,9 @@ public:
 	virtual void Move(const D3DXVECTOR3& d3dxvShift) { m_d3dxvPosition += d3dxvShift; }
 	//카메라를 x-축, y-축, z-축으로 회전하는 가상함수이다.
 	virtual void Rotate(float fPitch = 0.0f, float fYaw = 0.0f, float fRoll = 0.0f) { }
+	virtual void RotatebyYaw(const float fYaw = 0.0f) {}
 	//카메라의 이동, 회전에 따라 카메라의 정보를 갱신하는 가상함수이다.
-	virtual void Update(const D3DXVECTOR3 *pd3dxvPosition, float fTimeElapsed) {}
+	virtual void Update(const D3DXVECTOR3 *pd3dxvPosition) {}
 	/*3인칭 카메라에서 카메라가 바라보는 지점을 설정하는 가상함수이다. 일반적으로 플레이어를 바라보도록 설정한다.*/
 	virtual void SetLookAt(D3DXVECTOR3& vLookAt) { }
 
@@ -78,6 +78,9 @@ protected:
 	float m_fPitch;
 	float m_fRoll;
 	float m_fYaw;
+
+	float m_theta;
+	float m_radius;
 
 	//카메라의 종류(1인칭 카메라, 스페이스-쉽 카메라, 3인칭 카메라)를 나타낸다.
 	DWORD m_nMode;
@@ -118,7 +121,7 @@ class CThirdPersonCamera : public CCamera
 public:
 	CThirdPersonCamera();
 
-	//virtual void Update(float fTimeScale);
-	virtual void Update(const D3DXVECTOR3 *pd3dxvPosition, float fTimeElapsed);
+	virtual void RotatebyYaw(const float fYaw = 0.0f);
+	virtual void Update(const D3DXVECTOR3 *pd3dxvPosition);
 	virtual void SetLookAt(D3DXVECTOR3& vLookAt);
 };

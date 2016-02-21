@@ -14,6 +14,9 @@ CCamera::CCamera()
 	m_fRoll = 0.0f;
 	m_fYaw = 0.0f;
 
+	m_theta = 270;
+	m_radius = 50;
+
 	m_fTimeLag = 0.0f;
 
 	m_d3dxvLookAtWorld = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
@@ -117,11 +120,14 @@ CThirdPersonCamera::CThirdPersonCamera() : CCamera()
 	m_nMode = THIRD_PERSON_CAMERA;
 }
 
-void CThirdPersonCamera::Update(const D3DXVECTOR3 *pd3dxvPosition, float fTimeElapsed)
+void CThirdPersonCamera::Update(const D3DXVECTOR3 *pd3dxvPosition)
 {
-	m_d3dxvPosition = *pd3dxvPosition + D3DXVECTOR3(0, 20, -50);
-	RegenerateViewMatrix();
+	double theta = D3DXToRadian(m_theta);
+	m_d3dxvPosition.x = pd3dxvPosition->x + (m_radius * cos(theta));
+	m_d3dxvPosition.y = pd3dxvPosition->y + 20;
+	m_d3dxvPosition.z = pd3dxvPosition->z + (m_radius * sin(theta));
 
+	RegenerateViewMatrix();
 	SetLookAtPosition(*pd3dxvPosition);
 	SetLookAt(GetLookAtPosition());
 }
@@ -129,9 +135,21 @@ void CThirdPersonCamera::Update(const D3DXVECTOR3 *pd3dxvPosition, float fTimeEl
 void CThirdPersonCamera::SetLookAt(D3DXVECTOR3& d3dxvLookAt)
 {
 	D3DXMATRIX mtxLookAt;
-	//D3DXMatrixLookAtLH(&mtxLookAt, &m_d3dxvPosition, &d3dxvLookAt, &m_pPlayer->GetUpVector());
 	D3DXMatrixLookAtLH(&mtxLookAt, &m_d3dxvPosition, &d3dxvLookAt, &D3DXVECTOR3(0,1,0));
 	m_d3dxvRight = D3DXVECTOR3(mtxLookAt._11, mtxLookAt._21, mtxLookAt._31);
 	m_d3dxvUp = D3DXVECTOR3(mtxLookAt._12, mtxLookAt._22, mtxLookAt._32);
 	m_d3dxvLook = D3DXVECTOR3(mtxLookAt._13, mtxLookAt._23, mtxLookAt._33);
 }
+
+void CThirdPersonCamera::RotatebyYaw(const float fYaw)
+{
+	m_theta += fYaw;
+
+	if (m_theta < 0)		
+		m_theta += 360;
+	else if (m_theta > 359)
+		m_theta -= 360;
+}
+
+
+

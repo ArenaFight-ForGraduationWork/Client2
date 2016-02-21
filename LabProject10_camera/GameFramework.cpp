@@ -274,7 +274,7 @@ void CGameFramework::BuildObjects()
 	m_pCamera->SetMode(THIRD_PERSON_CAMERA);
 
 	// 2) 카메라 update
-	m_pCamera->Update(&(m_ppPlayers[0]->GetPosition()), m_GameTimer.GetTimeElapsed());
+	m_pCamera->Update(&(m_ppPlayers[0]->GetPosition()));
 	m_pCamera->SetLookAt(D3DXVECTOR3(0, 0, 0));
 	m_pCamera->RegenerateViewMatrix();
 
@@ -336,13 +336,12 @@ void CGameFramework::ProcessInput()
 		//플레이어를 이동하거나(dwDirection) 회전한다(cxDelta 또는 cyDelta).
 		if ((dwDirection != 0) || (cxDelta != 0.0f) || (cyDelta != 0.0f))
 		{
-			if (cxDelta || cyDelta)
+			if (cxDelta)
 			{
-				/*cxDelta는 y-축의 회전을 나타내고 cyDelta는 x-축의 회전을 나타낸다. 오른쪽 마우스 버튼이 눌려진 경우 cxDelta는 z-축의 회전을 나타낸다.*/
-				if (pKeyBuffer[VK_RBUTTON] & 0xF0)
-					m_ppPlayers[0]->Rotate(cyDelta, 0.0f, -cxDelta);
+				if (cxDelta >= 0)
+					m_pCamera->RotatebyYaw(1);
 				else
-					m_ppPlayers[0]->Rotate(cyDelta, cxDelta, 0.0f);
+					m_pCamera->RotatebyYaw(-1);
 			}
 			// 플레이어를 dwDirection 방향으로 이동한다(실제로는 속도 벡터를 변경한다).
 			// 이동 거리는 시간에 비례하도록 한다. 플레이어의 이동 속력은 500/초로 가정한다.
@@ -350,31 +349,13 @@ void CGameFramework::ProcessInput()
 			//if (dwDirection) m_ppPlayers[0]->Move(dwDirection, 500.0f * m_GameTimer.GetTimeElapsed(), true);
 			//if (dwDirection) m_ppPlayers[0]->Move(dwDirection, 500.0f, true);
 			if (dwDirection) m_ppPlayers[0]->Move(dwDirection, 50.0f* m_GameTimer.GetTimeElapsed(), false);
-
-			if (true)
-			{
-				D3DXVECTOR3 pos = m_ppPlayers[0]->GetPosition();
-				int a = 1;
-			}
 		}
 	}
 	//플레이어를 실제로 이동하고 카메라를 갱신한다. 중력과 마찰력의 영향을 속도 벡터에 적용한다.
 	m_ppPlayers[0]->Update(m_GameTimer.GetTimeElapsed());
 
-	if (true)
-	{
-		D3DXVECTOR3 pos = m_ppPlayers[0]->GetPosition();
-		int a = 1;
-	}
-
 	// 4) 플레이어 위치에 따라 카메라 update
-	m_pCamera->Update(&(m_ppPlayers[0]->GetPosition()), m_GameTimer.GetTimeElapsed());
-
-	if (true)
-	{
-		D3DXVECTOR3 pos = m_ppPlayers[0]->GetPosition();
-		int a = 1;
-	}
+	m_pCamera->Update(&(m_ppPlayers[0]->GetPosition()));
 }
 
 

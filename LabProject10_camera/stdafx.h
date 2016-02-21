@@ -49,3 +49,10 @@
 #define PS_SLOT_MATERIAL		0x01
 #define PS_SLOT_TEXTURE			0x00
 #define PS_SLOT_SAMPLER_STATE	0x00
+
+
+//#define MATH_PI 3.1415926535897931
+//
+//#define MATH_DEG2RAD(a) ((a)/180.0*3.1415926535897931) //from degree to radian eg)) RAD(90) = pi/2.0 radian
+//#define MATH_RAD2DEG(a) ((a)/3.1415926535897931*180.0) //from radian to degree eg)) DEG(3.141459) = 180 degrees
+
