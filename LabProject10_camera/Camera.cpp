@@ -10,10 +10,6 @@ CCamera::CCamera()
 	m_d3dxvUp = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	m_d3dxvLook = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
 
-	m_fPitch = 0.0f;
-	m_fRoll = 0.0f;
-	m_fYaw = 0.0f;
-
 	m_theta = 270;
 	m_radius = 50;
 
@@ -100,7 +96,6 @@ void CCamera::CreateShaderVariables(ID3D11Device *pd3dDevice)
 	pd3dDevice->CreateBuffer(&bd, NULL, &m_pd3dcbCamera);
 }
 
-
 void CCamera::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
@@ -112,6 +107,7 @@ void CCamera::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext)
 
 	pd3dDeviceContext->VSSetConstantBuffers(NULL, 1, &m_pd3dcbCamera);
 }
+
 
 
 
@@ -145,7 +141,7 @@ void CThirdPersonCamera::RotatebyYaw(const float fYaw)
 {
 	m_theta += fYaw;
 
-	if (m_theta < 0)		
+	if (m_theta < 0)
 		m_theta += 360;
 	else if (m_theta > 359)
 		m_theta -= 360;

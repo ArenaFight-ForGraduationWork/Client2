@@ -46,10 +46,6 @@ public:
 	D3DXVECTOR3& GetUpVector() { return(m_d3dxvUp); }
 	D3DXVECTOR3& GetLookVector() { return(m_d3dxvLook); }
 
-	float& GetPitch() { return(m_fPitch); }
-	float& GetRoll() { return(m_fRoll); }
-	float& GetYaw() { return(m_fYaw); }
-
 	void SetOffset(D3DXVECTOR3 d3dxvOffset) { m_d3dxvOffset = d3dxvOffset; m_d3dxvPosition += d3dxvOffset; }
 	D3DXVECTOR3& GetOffset() { return(m_d3dxvOffset); }
 
@@ -73,11 +69,6 @@ protected:
 	D3DXVECTOR3 m_d3dxvRight;
 	D3DXVECTOR3 m_d3dxvUp;
 	D3DXVECTOR3 m_d3dxvLook;
-
-	//카메라가 x-축, z-축, y-축으로 얼마만큼 회전했는 가를 나타내는 각도이다.
-	float m_fPitch;
-	float m_fRoll;
-	float m_fYaw;
 
 	float m_theta;
 	float m_radius;
