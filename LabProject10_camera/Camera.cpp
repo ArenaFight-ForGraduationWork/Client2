@@ -5,6 +5,7 @@
 
 CCamera::CCamera()
 {
+	m_d3dxvPosition = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_d3dxvRight = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
 	m_d3dxvUp = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	m_d3dxvLook = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
@@ -31,18 +32,6 @@ CCamera::~CCamera()
 	if (m_pd3dcbCamera) m_pd3dcbCamera->Release();
 }
 
-void CCamera::SetPosition(D3DXVECTOR3 d3dxvPosition)
-{
-	m_d3dxmtxView._41 = d3dxvPosition.x;
-	m_d3dxmtxView._42 = d3dxvPosition.y;
-	m_d3dxmtxView._43 = d3dxvPosition.z;
-}
-D3DXVECTOR3& CCamera::GetPosition()
-{
-	return D3DXVECTOR3(m_d3dxmtxView._41, m_d3dxmtxView._42, m_d3dxmtxView._43);
-}
-
-
 void CCamera::SetViewport(ID3D11DeviceContext *pd3dDeviceContext, DWORD xTopLeft, DWORD yTopLeft, DWORD nWidth, DWORD nHeight, float fMinZ, float fMaxZ)
 {
 	m_d3dViewport.TopLeftX = float(xTopLeft);
@@ -67,7 +56,7 @@ void CCamera::GenerateProjectionMatrix(float fNearPlaneDistance, float fFarPlane
 // 카메라 변환 행렬을 생성하는 함수이다. 
 void CCamera::GenerateViewMatrix()
 {
-	D3DXMatrixLookAtLH(&m_d3dxmtxView, &GetPosition(), &m_d3dxvLookAtWorld, &m_d3dxvUp);
+	D3DXMatrixLookAtLH(&m_d3dxmtxView, &m_d3dxvPosition, &m_d3dxvLookAtWorld, &m_d3dxvUp);
 }
 
 void CCamera::RegenerateViewMatrix()
@@ -92,9 +81,9 @@ void CCamera::RegenerateViewMatrix()
 	m_d3dxmtxView._31 = m_d3dxvRight.z;
 	m_d3dxmtxView._32 = m_d3dxvUp.z;
 	m_d3dxmtxView._33 = m_d3dxvLook.z;
-	m_d3dxmtxView._41 = -D3DXVec3Dot(&GetPosition(), &m_d3dxvRight);
-	m_d3dxmtxView._42 = -D3DXVec3Dot(&GetPosition(), &m_d3dxvUp);
-	m_d3dxmtxView._43 = -D3DXVec3Dot(&GetPosition(), &m_d3dxvLook);
+	m_d3dxmtxView._41 = -D3DXVec3Dot(&m_d3dxvPosition, &m_d3dxvRight);
+	m_d3dxmtxView._42 = -D3DXVec3Dot(&m_d3dxvPosition, &m_d3dxvUp);
+	m_d3dxmtxView._43 = -D3DXVec3Dot(&m_d3dxvPosition, &m_d3dxvLook);
 }
 
 void CCamera::CreateShaderVariables(ID3D11Device *pd3dDevice)
@@ -130,7 +119,7 @@ CThirdPersonCamera::CThirdPersonCamera() : CCamera()
 
 void CThirdPersonCamera::Update(const D3DXVECTOR3 *pd3dxvPosition, float fTimeElapsed)
 {
-	SetPosition(*pd3dxvPosition + D3DXVECTOR3(0, 20, -50));
+	m_d3dxvPosition = *pd3dxvPosition + D3DXVECTOR3(0, 20, -50);
 	RegenerateViewMatrix();
 
 	SetLookAtPosition(*pd3dxvPosition);
@@ -140,7 +129,8 @@ void CThirdPersonCamera::Update(const D3DXVECTOR3 *pd3dxvPosition, float fTimeEl
 void CThirdPersonCamera::SetLookAt(D3DXVECTOR3& d3dxvLookAt)
 {
 	D3DXMATRIX mtxLookAt;
-	D3DXMatrixLookAtLH(&mtxLookAt, &GetPosition(), &d3dxvLookAt, &D3DXVECTOR3(0,1,0));
+	//D3DXMatrixLookAtLH(&mtxLookAt, &m_d3dxvPosition, &d3dxvLookAt, &m_pPlayer->GetUpVector());
+	D3DXMatrixLookAtLH(&mtxLookAt, &m_d3dxvPosition, &d3dxvLookAt, &D3DXVECTOR3(0,1,0));
 	m_d3dxvRight = D3DXVECTOR3(mtxLookAt._11, mtxLookAt._21, mtxLookAt._31);
 	m_d3dxvUp = D3DXVECTOR3(mtxLookAt._12, mtxLookAt._22, mtxLookAt._32);
 	m_d3dxvLook = D3DXVECTOR3(mtxLookAt._13, mtxLookAt._23, mtxLookAt._33);
