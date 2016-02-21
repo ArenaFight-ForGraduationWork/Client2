@@ -7,6 +7,8 @@ CGameFramework::CGameFramework()
 	m_ppPlayers = NULL;
 	m_pCamera = nullptr;
 
+	m_OperationMode = MODE_MOUSE;
+
 	m_pd3dDevice = NULL;
 	m_pDXGISwapChain = NULL;
 	m_pd3dRenderTargetView = NULL;
@@ -33,12 +35,12 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	m_hWnd = hMainWnd;
 
 	//Direct3D 디바이스, 디바이스 컨텍스트, 스왑 체인 등을 생성하는 함수를 호출한다. 
-	if (!CreateDirect3DDisplay()) return(false);
+	if (!CreateDirect3DDisplay()) return false;
 
 	//렌더링할 객체(게임 월드 객체)를 생성한다. 
 	BuildObjects();
 
-	return(true);
+	return true;
 }
 
 bool CGameFramework::CreateRenderTargetDepthStencilView()
@@ -46,8 +48,8 @@ bool CGameFramework::CreateRenderTargetDepthStencilView()
 	HRESULT hResult = S_OK;
 
 	ID3D11Texture2D *pd3dBackBuffer;
-	if (FAILED(hResult = m_pDXGISwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID *)&pd3dBackBuffer))) return(false);
-	if (FAILED(hResult = m_pd3dDevice->CreateRenderTargetView(pd3dBackBuffer, NULL, &m_pd3dRenderTargetView))) return(false);
+	if (FAILED(hResult = m_pDXGISwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID *)&pd3dBackBuffer))) return false;
+	if (FAILED(hResult = m_pd3dDevice->CreateRenderTargetView(pd3dBackBuffer, NULL, &m_pd3dRenderTargetView))) return false;
 	if (pd3dBackBuffer) pd3dBackBuffer->Release();
 
 	// Create depth stencil texture
@@ -64,7 +66,7 @@ bool CGameFramework::CreateRenderTargetDepthStencilView()
 	d3dDepthStencilBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	d3dDepthStencilBufferDesc.CPUAccessFlags = 0;
 	d3dDepthStencilBufferDesc.MiscFlags = 0;
-	if (FAILED(hResult = m_pd3dDevice->CreateTexture2D(&d3dDepthStencilBufferDesc, NULL, &m_pd3dDepthStencilBuffer))) return(false);
+	if (FAILED(hResult = m_pd3dDevice->CreateTexture2D(&d3dDepthStencilBufferDesc, NULL, &m_pd3dDepthStencilBuffer))) return false;
 
 	// Create the depth stencil view
 	D3D11_DEPTH_STENCIL_VIEW_DESC d3dDepthStencilViewDesc;
@@ -72,11 +74,11 @@ bool CGameFramework::CreateRenderTargetDepthStencilView()
 	d3dDepthStencilViewDesc.Format = d3dDepthStencilBufferDesc.Format;
 	d3dDepthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	d3dDepthStencilViewDesc.Texture2D.MipSlice = 0;
-	if (FAILED(hResult = m_pd3dDevice->CreateDepthStencilView(m_pd3dDepthStencilBuffer, &d3dDepthStencilViewDesc, &m_pd3dDepthStencilView))) return(false);
+	if (FAILED(hResult = m_pd3dDevice->CreateDepthStencilView(m_pd3dDepthStencilBuffer, &d3dDepthStencilViewDesc, &m_pd3dDepthStencilView))) return false;
 
 	m_pd3dDeviceContext->OMSetRenderTargets(1, &m_pd3dRenderTargetView, m_pd3dDepthStencilView);
 
-	return(true);
+	return true;
 }
 
 
@@ -86,14 +88,14 @@ bool CGameFramework::CreateRenderTargetView()
 
 	//스왑 체인의 후면버퍼에 대한 렌더 타겟 뷰를 생성한다.
 	ID3D11Texture2D *pd3dBackBuffer;
-	if (FAILED(hResult = m_pDXGISwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID *)&pd3dBackBuffer))) return(false);
-	if (FAILED(hResult = m_pd3dDevice->CreateRenderTargetView(pd3dBackBuffer, NULL, &m_pd3dRenderTargetView))) return(false);
+	if (FAILED(hResult = m_pDXGISwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID *)&pd3dBackBuffer))) return false;
+	if (FAILED(hResult = m_pd3dDevice->CreateRenderTargetView(pd3dBackBuffer, NULL, &m_pd3dRenderTargetView))) return false;
 	if (pd3dBackBuffer) pd3dBackBuffer->Release();
 
 	//렌더 타겟 뷰를 생성하고 출력-병합 단계에 연결한다.
 	m_pd3dDeviceContext->OMSetRenderTargets(1, &m_pd3dRenderTargetView, NULL);
 
-	return(true);
+	return true;
 }
 
 bool CGameFramework::CreateDirect3DDisplay()
@@ -152,14 +154,14 @@ bool CGameFramework::CreateDirect3DDisplay()
 		nd3dDriverType = d3dDriverTypes[i];
 		if (SUCCEEDED(hResult = D3D11CreateDeviceAndSwapChain(NULL, nd3dDriverType, NULL, dwCreateDeviceFlags, d3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &dxgiSwapChainDesc, &m_pDXGISwapChain, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext))) break;
 	}
-	if (!m_pDXGISwapChain || !m_pd3dDevice || !m_pd3dDeviceContext) return(false);
+	if (!m_pDXGISwapChain || !m_pd3dDevice || !m_pd3dDeviceContext) return false;
 
 	//렌더 타겟 뷰를 생성하는 함수를 호출한다.
-	if (!CreateRenderTargetDepthStencilView()) return(false);
+	if (!CreateRenderTargetDepthStencilView()) return false;
 
 	//SetViewport();
 
-	return(true);
+	return true;
 }
 
 void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
@@ -190,9 +192,10 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		switch (wParam)
 		{
 		case VK_F1:
+			m_OperationMode = MODE_MOUSE;
 		case VK_F2:
+			m_OperationMode = MODE_KEYBOARD;
 		case VK_F3:
-			//m_ppPlayers[0]->ChangeCamera(m_pd3dDevice, (wParam - VK_F1 + 1), m_GameTimer.GetTimeElapsed());
 			break;
 		case VK_ESCAPE:
 			::PostQuitMessage(0);
@@ -212,22 +215,22 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 	{
 	case WM_SIZE:
 	{
-					m_nWndClientWidth = LOWORD(lParam);
-					m_nWndClientHeight = HIWORD(lParam);
+		m_nWndClientWidth = LOWORD(lParam);
+		m_nWndClientHeight = HIWORD(lParam);
 
-					m_pd3dDeviceContext->OMSetRenderTargets(0, NULL, NULL);
+		m_pd3dDeviceContext->OMSetRenderTargets(0, NULL, NULL);
 
-					if (m_pd3dRenderTargetView) m_pd3dRenderTargetView->Release();
-					if (m_pd3dDepthStencilBuffer) m_pd3dDepthStencilBuffer->Release();
-					if (m_pd3dDepthStencilView) m_pd3dDepthStencilView->Release();
+		if (m_pd3dRenderTargetView) m_pd3dRenderTargetView->Release();
+		if (m_pd3dDepthStencilBuffer) m_pd3dDepthStencilBuffer->Release();
+		if (m_pd3dDepthStencilView) m_pd3dDepthStencilView->Release();
 
-					m_pDXGISwapChain->ResizeBuffers(1, 0, 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
+		m_pDXGISwapChain->ResizeBuffers(1, 0, 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
 
-					CreateRenderTargetDepthStencilView();
+		CreateRenderTargetDepthStencilView();
 
-					m_pCamera->SetViewport(m_pd3dDeviceContext, 0, 0, m_nWndClientWidth, m_nWndClientHeight, 0.0f, 1.0f);
+		m_pCamera->SetViewport(m_pd3dDeviceContext, 0, 0, m_nWndClientWidth, m_nWndClientHeight, 0.0f, 1.0f);
 
-					break;
+		break;
 	}
 	case WM_LBUTTONDOWN:
 	case WM_RBUTTONDOWN:
@@ -271,7 +274,6 @@ void CGameFramework::BuildObjects()
 	// 1) 카메라 init
 	m_pCamera = new CThirdPersonCamera();
 	m_pCamera->CreateShaderVariables(m_pd3dDevice);
-	m_pCamera->SetMode(THIRD_PERSON_CAMERA);
 
 	// 2) 카메라 update
 	m_pCamera->Update(&(m_ppPlayers[0]->GetPosition()));
@@ -282,7 +284,6 @@ void CGameFramework::BuildObjects()
 	m_pCamera->SetViewport(m_pd3dDeviceContext, 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 	m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 	m_pCamera->GenerateViewMatrix();
-
 
 	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice);
 }
@@ -303,25 +304,22 @@ void CGameFramework::ReleaseObjects()
 
 void CGameFramework::ProcessInput()
 {
-	bool bProcessedByScene = false;
-	if (m_pScene) bProcessedByScene = m_pScene->ProcessInput();
-	if (!bProcessedByScene)
+	static UCHAR pKeyBuffer[256];
+	DWORD dwDirection = 0;
+
+	switch (m_OperationMode)
 	{
-		static UCHAR pKeyBuffer[256];
-		DWORD dwDirection = 0;
-		
+	case MODE_MOUSE:
+	{
 		if (GetKeyboardState(pKeyBuffer))
 		{
-			if (pKeyBuffer[VK_UP] & 0xF0) dwDirection |= DIR_FORWARD;
-			if (pKeyBuffer[VK_DOWN] & 0xF0) dwDirection |= DIR_BACKWARD;
-			if (pKeyBuffer[VK_LEFT] & 0xF0) dwDirection |= DIR_LEFT;
-			if (pKeyBuffer[VK_RIGHT] & 0xF0) dwDirection |= DIR_RIGHT;
-			if (pKeyBuffer[VK_PRIOR] & 0xF0) dwDirection |= DIR_UP;
-			if (pKeyBuffer[VK_NEXT] & 0xF0) dwDirection |= DIR_DOWN;
+			if (pKeyBuffer[0x41] & 0xF0) dwDirection |= DIR_LEFT;	// A
+			if (pKeyBuffer[0x44] & 0xF0) dwDirection |= DIR_RIGHT;	// D
+			if (pKeyBuffer[0x57] & 0xF0) dwDirection |= DIR_UP;		// W
+			if (pKeyBuffer[0x53] & 0xF0) dwDirection |= DIR_DOWN;	// S
 		}
 		float cxDelta = 0.0f, cyDelta = 0.0f;
 		POINT ptCursorPos;
-		
 		if (GetCapture() == m_hWnd)
 		{
 			//마우스 커서를 화면에서 없앤다(보이지 않게 한다).
@@ -339,18 +337,31 @@ void CGameFramework::ProcessInput()
 			if (cxDelta)
 			{
 				if (cxDelta >= 0)
-					m_pCamera->RotatebyYaw(1);
+					m_pCamera->RotatebyYaw(50 * m_GameTimer.GetTimeElapsed());
 				else
-					m_pCamera->RotatebyYaw(-1);
+					m_pCamera->RotatebyYaw(-50 * m_GameTimer.GetTimeElapsed());
 			}
-			// 플레이어를 dwDirection 방향으로 이동한다(실제로는 속도 벡터를 변경한다).
-			// 이동 거리는 시간에 비례하도록 한다. 플레이어의 이동 속력은 500/초로 가정한다.
-			// 만약 플레이어의 이동 속력이 있다면 그 값을 사용한다.
-			//if (dwDirection) m_ppPlayers[0]->Move(dwDirection, 500.0f * m_GameTimer.GetTimeElapsed(), true);
-			//if (dwDirection) m_ppPlayers[0]->Move(dwDirection, 500.0f, true);
 			if (dwDirection) m_ppPlayers[0]->Move(dwDirection, 50.0f* m_GameTimer.GetTimeElapsed(), false);
 		}
 	}
+	break;
+	case MODE_KEYBOARD:
+	{
+		if (GetKeyboardState(pKeyBuffer))
+		{
+			if (pKeyBuffer[VK_UP] & 0xF0) dwDirection |= DIR_FORWARD;
+			if (pKeyBuffer[VK_DOWN] & 0xF0) dwDirection |= DIR_BACKWARD;
+			if (pKeyBuffer[VK_LEFT] & 0xF0) dwDirection |= DIR_LEFT;
+			if (pKeyBuffer[VK_RIGHT] & 0xF0) dwDirection |= DIR_RIGHT;
+			if (pKeyBuffer[0x51] & 0xF0) m_pCamera->RotatebyYaw(-50 * m_GameTimer.GetTimeElapsed());
+			if (pKeyBuffer[0x45] & 0xF0) m_pCamera->RotatebyYaw(50 * m_GameTimer.GetTimeElapsed());
+		}
+
+		if (dwDirection) m_ppPlayers[0]->Move(dwDirection, 50.0f* m_GameTimer.GetTimeElapsed(), false);
+	}
+	break;
+	}
+		
 	//플레이어를 실제로 이동하고 카메라를 갱신한다. 중력과 마찰력의 영향을 속도 벡터에 적용한다.
 	m_ppPlayers[0]->Update(m_GameTimer.GetTimeElapsed());
 
@@ -366,7 +377,7 @@ void CGameFramework::AnimateObjects()
 
 void CGameFramework::FrameAdvance()
 {
-	m_GameTimer.Tick();
+	m_GameTimer.Tick(33.0f);
 
 	ProcessInput();
 

@@ -5,6 +5,9 @@
 #include "Scene.h"
 #include "Camera.h"
 
+#define MODE_MOUSE		0x01
+#define MODE_KEYBOARD	0x02
+
 class CGameFramework
 {
 private:
@@ -18,6 +21,8 @@ private:
 	int m_nPlayers;
 	CPlayer **m_ppPlayers;
 	CCamera *m_pCamera;
+
+	DWORD m_OperationMode;
 
 	//디바이스 인터페이스에 대한 포인터이다. 주로 리소스를 생성하기 위하여 필요하다.
 	ID3D11Device *m_pd3dDevice;
