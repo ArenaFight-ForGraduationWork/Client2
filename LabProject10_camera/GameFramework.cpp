@@ -3,8 +3,7 @@
 
 CGameFramework::CGameFramework()
 {
-	m_nPlayers = 0;
-	m_ppPlayers = NULL;
+	m_pPlayer = nullptr;
 	m_pCamera = nullptr;
 
 	m_OperationMode = MODE_MOUSE;
@@ -266,17 +265,15 @@ void CGameFramework::BuildObjects()
 {
 	m_pScene = new CScene();
 
-	m_nPlayers = 1;
-	m_ppPlayers = new CPlayer*[m_nPlayers];
-	m_ppPlayers[0] = new CAirplanePlayer(m_pd3dDevice);
-	m_ppPlayers[0]->SetPosition(D3DXVECTOR3(0, 0, 0));
+	m_pPlayer = new CAirplanePlayer(m_pd3dDevice);
+	m_pPlayer->SetPosition(D3DXVECTOR3(0, 0, 0));
 
 	// 1) 카메라 init
 	m_pCamera = new CThirdPersonCamera();
 	m_pCamera->CreateShaderVariables(m_pd3dDevice);
 
 	// 2) 카메라 update
-	m_pCamera->Update(&(m_ppPlayers[0]->GetPosition()));
+	m_pCamera->Update(&(m_pPlayer->GetPosition()));
 	m_pCamera->SetLookAt(D3DXVECTOR3(0, 0, 0));
 	m_pCamera->RegenerateViewMatrix();
 
@@ -294,11 +291,7 @@ void CGameFramework::ReleaseObjects()
 	if (m_pScene) m_pScene->ReleaseObjects();
 	if (m_pScene) delete m_pScene;
 
-	if (m_ppPlayers)
-	{
-		for (int j = 0; j < m_nPlayers; j++) delete m_ppPlayers[j];
-		delete[] m_ppPlayers;
-	}
+	if (m_pPlayer)	delete m_pPlayer;
 }
 
 
@@ -341,7 +334,7 @@ void CGameFramework::ProcessInput()
 				else
 					m_pCamera->RotatebyYaw(-50 * m_GameTimer.GetTimeElapsed());
 			}
-			if (dwDirection) m_ppPlayers[0]->Move(dwDirection, 50.0f* m_GameTimer.GetTimeElapsed(), false);
+			if (dwDirection) m_pPlayer->Move(dwDirection, 50.0f* m_GameTimer.GetTimeElapsed(), false);
 		}
 	}
 	break;
@@ -357,16 +350,16 @@ void CGameFramework::ProcessInput()
 			if (pKeyBuffer[0x45] & 0xF0) m_pCamera->RotatebyYaw(50 * m_GameTimer.GetTimeElapsed());
 		}
 
-		if (dwDirection) m_ppPlayers[0]->Move(dwDirection, 50.0f* m_GameTimer.GetTimeElapsed(), false);
+		if (dwDirection) m_pPlayer->Move(dwDirection, 50.0f* m_GameTimer.GetTimeElapsed(), false);
 	}
 	break;
 	}
 		
 	//플레이어를 실제로 이동하고 카메라를 갱신한다. 중력과 마찰력의 영향을 속도 벡터에 적용한다.
-	m_ppPlayers[0]->Update(m_GameTimer.GetTimeElapsed());
+	m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
 
 	// 4) 플레이어 위치에 따라 카메라 update
-	m_pCamera->Update(&(m_ppPlayers[0]->GetPosition()));
+	m_pCamera->Update(&(m_pPlayer->GetPosition()));
 }
 
 
@@ -388,17 +381,14 @@ void CGameFramework::FrameAdvance()
 	if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
 	CCamera *pCamera = NULL;
-	for (int i = 0; i < m_nPlayers; i++)
-	{
-		if (m_ppPlayers[i]) m_ppPlayers[i]->UpdateShaderVariables(m_pd3dDeviceContext);
+	m_pPlayer->UpdateShaderVariables(m_pd3dDeviceContext);
 
-		// 5) 카메라 쉐이더 update
-		if (m_pCamera) m_pCamera->UpdateShaderVariables(m_pd3dDeviceContext);
+	// 5) 카메라 쉐이더 update
+	if (m_pCamera) m_pCamera->UpdateShaderVariables(m_pd3dDeviceContext);
 
-		if (m_pScene) m_pScene->Render(m_pd3dDeviceContext, pCamera);
-		//3인칭 카메라일 때 플레이어를 렌더링한다.
-		for (int j = 0; j < m_nPlayers; j++) if (m_ppPlayers[j]) m_ppPlayers[j]->Render(m_pd3dDeviceContext);
-	}
+	if (m_pScene) m_pScene->Render(m_pd3dDeviceContext, pCamera);
+	//3인칭 카메라일 때 플레이어를 렌더링한다.
+	if (m_pPlayer) m_pPlayer->Render(m_pd3dDeviceContext);
 
 	m_pDXGISwapChain->Present(0, 0);
 

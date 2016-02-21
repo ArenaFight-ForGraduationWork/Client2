@@ -17,9 +17,7 @@ private:
 	int m_nWndClientWidth;
 	int m_nWndClientHeight;
 
-	//player는 보통 1인이나, 둘 이상으로 할 수 있으므로 배열로 선언한다
-	int m_nPlayers;
-	CPlayer **m_ppPlayers;
+	CPlayer *m_pPlayer;
 	CCamera *m_pCamera;
 
 	DWORD m_OperationMode;
