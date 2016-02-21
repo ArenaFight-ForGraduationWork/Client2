@@ -5,6 +5,7 @@ CGameFramework::CGameFramework()
 {
 	m_nPlayers = 0;
 	m_ppPlayers = NULL;
+	m_pCamera = nullptr;
 
 	m_pd3dDevice = NULL;
 	m_pDXGISwapChain = NULL;
@@ -191,7 +192,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		case VK_F1:
 		case VK_F2:
 		case VK_F3:
-			m_ppPlayers[0]->ChangeCamera(m_pd3dDevice, (wParam - VK_F1 + 1), m_GameTimer.GetTimeElapsed());
+			//m_ppPlayers[0]->ChangeCamera(m_pd3dDevice, (wParam - VK_F1 + 1), m_GameTimer.GetTimeElapsed());
 			break;
 		case VK_ESCAPE:
 			::PostQuitMessage(0);
@@ -224,11 +225,8 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 
 					CreateRenderTargetDepthStencilView();
 
-					if (m_ppPlayers)
-					{
-						CCamera *pCamera = m_ppPlayers[0]->GetCamera();
-						pCamera->SetViewport(m_pd3dDeviceContext, 0, 0, m_nWndClientWidth, m_nWndClientHeight, 0.0f, 1.0f);
-					}
+					m_pCamera->SetViewport(m_pd3dDeviceContext, 0, 0, m_nWndClientWidth, m_nWndClientHeight, 0.0f, 1.0f);
+
 					break;
 	}
 	case WM_LBUTTONDOWN:
@@ -267,20 +265,24 @@ void CGameFramework::BuildObjects()
 
 	m_nPlayers = 1;
 	m_ppPlayers = new CPlayer*[m_nPlayers];
+	m_ppPlayers[0] = new CAirplanePlayer(m_pd3dDevice);
+	m_ppPlayers[0]->SetPosition(D3DXVECTOR3(0, 0, 0));
 
-	CAirplanePlayer *pAirplanePlyer = new CAirplanePlayer(m_pd3dDevice);
-	//플레이어의 카메라를 스페이스-쉽 카메라로 변경한다.
-	pAirplanePlyer->ChangeCamera(m_pd3dDevice, THIRD_PERSON_CAMERA, m_GameTimer.GetTimeElapsed());
+	// 1) 카메라 init
+	m_pCamera = new CThirdPersonCamera();
+	m_pCamera->CreateShaderVariables(m_pd3dDevice);
+	m_pCamera->SetMode(THIRD_PERSON_CAMERA);
 
-	CCamera *pCamera = pAirplanePlyer->GetCamera();
-	pCamera->SetViewport(m_pd3dDeviceContext, 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
-	pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
-	pCamera->GenerateViewMatrix();
+	// 2) 카메라 update
+	m_pCamera->Update(&(m_ppPlayers[0]->GetPosition()), m_GameTimer.GetTimeElapsed());
+	m_pCamera->SetLookAt(D3DXVECTOR3(0, 0, 0));
+	m_pCamera->RegenerateViewMatrix();
 
-	//플레이어의 위치를 스페이스-쉽 카메라로 변경한다.
-	pAirplanePlyer->SetPosition(D3DXVECTOR3(0.0f, 10.0f, -50.0f));
+	// 3) 카메라 set 마저
+	m_pCamera->SetViewport(m_pd3dDeviceContext, 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
+	m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
+	m_pCamera->GenerateViewMatrix();
 
-	m_ppPlayers[0] = pAirplanePlyer;
 
 	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice);
 }
@@ -345,11 +347,34 @@ void CGameFramework::ProcessInput()
 			// 플레이어를 dwDirection 방향으로 이동한다(실제로는 속도 벡터를 변경한다).
 			// 이동 거리는 시간에 비례하도록 한다. 플레이어의 이동 속력은 500/초로 가정한다.
 			// 만약 플레이어의 이동 속력이 있다면 그 값을 사용한다.
-			if (dwDirection) m_ppPlayers[0]->Move(dwDirection, 500.0f * m_GameTimer.GetTimeElapsed(), true);
+			//if (dwDirection) m_ppPlayers[0]->Move(dwDirection, 500.0f * m_GameTimer.GetTimeElapsed(), true);
+			//if (dwDirection) m_ppPlayers[0]->Move(dwDirection, 500.0f, true);
+			if (dwDirection) m_ppPlayers[0]->Move(dwDirection, 50.0f* m_GameTimer.GetTimeElapsed(), false);
+
+			if (true)
+			{
+				D3DXVECTOR3 pos = m_ppPlayers[0]->GetPosition();
+				int a = 1;
+			}
 		}
 	}
 	//플레이어를 실제로 이동하고 카메라를 갱신한다. 중력과 마찰력의 영향을 속도 벡터에 적용한다.
 	m_ppPlayers[0]->Update(m_GameTimer.GetTimeElapsed());
+
+	if (true)
+	{
+		D3DXVECTOR3 pos = m_ppPlayers[0]->GetPosition();
+		int a = 1;
+	}
+
+	// 4) 플레이어 위치에 따라 카메라 update
+	m_pCamera->Update(&(m_ppPlayers[0]->GetPosition()), m_GameTimer.GetTimeElapsed());
+
+	if (true)
+	{
+		D3DXVECTOR3 pos = m_ppPlayers[0]->GetPosition();
+		int a = 1;
+	}
 }
 
 
@@ -374,7 +399,10 @@ void CGameFramework::FrameAdvance()
 	for (int i = 0; i < m_nPlayers; i++)
 	{
 		if (m_ppPlayers[i]) m_ppPlayers[i]->UpdateShaderVariables(m_pd3dDeviceContext);
-		pCamera = m_ppPlayers[i]->GetCamera();
+
+		// 5) 카메라 쉐이더 update
+		if (m_pCamera) m_pCamera->UpdateShaderVariables(m_pd3dDeviceContext);
+
 		if (m_pScene) m_pScene->Render(m_pd3dDeviceContext, pCamera);
 		//3인칭 카메라일 때 플레이어를 렌더링한다.
 		for (int j = 0; j < m_nPlayers; j++) if (m_ppPlayers[j]) m_ppPlayers[j]->Render(m_pd3dDeviceContext);

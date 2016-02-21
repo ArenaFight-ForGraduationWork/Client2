@@ -1,6 +1,5 @@
 #pragma once
 #include "Timer.h"
-#include "Camera.h"
 #include "Object.h"
 #include "Shader.h"
 
@@ -35,8 +34,8 @@ protected:
 	//카메라의 위치가 바뀔 때마다 호출되는 OnCameraUpdated() 함수에서 사용하는 데이터이다.
 	LPVOID m_pCameraUpdatedContext;
 
-	//플레이어의 현재 카메라이다.
-	CCamera *m_pCamera;
+	////플레이어의 현재 카메라이다.
+	//CCamera *m_pCamera;
 
 	//3인칭 카메라일 때 플레이어를 그리기 위해 사용하는 쉐이더이다.
 	CPlayerShader *m_pShader;
@@ -66,8 +65,8 @@ public:
 	float GetPitch() const { return(m_fPitch); }
 	float GetRoll() const { return(m_fRoll); }
 
-	CCamera *GetCamera() { return(m_pCamera); }
-	void SetCamera(CCamera *pCamera) { m_pCamera = pCamera; }
+	//CCamera *GetCamera() { return(m_pCamera); }
+	//void SetCamera(CCamera *pCamera) { m_pCamera = pCamera; }
 
 	//플레이어를 이동하는 함수이다.
 	void Move(ULONG nDirection, float fDistance, bool bVelocity = false);
@@ -86,16 +85,16 @@ public:
 	virtual void OnPlayerUpdated(float fTimeElapsed);
 	void SetPlayerUpdatedContext(LPVOID pContext) { m_pPlayerUpdatedContext = pContext; }
 
-	//카메라의 위치가 바뀔 때마다 호출되는 함수와 그 함수에서 사용하는 정보를 설정하는 함수이다.
-	virtual void OnCameraUpdated(float fTimeElapsed);
-	void SetCameraUpdatedContext(LPVOID pContext) { m_pCameraUpdatedContext = pContext; }
+	////카메라의 위치가 바뀔 때마다 호출되는 함수와 그 함수에서 사용하는 정보를 설정하는 함수이다.
+	//virtual void OnCameraUpdated(float fTimeElapsed);
+	//void SetCameraUpdatedContext(LPVOID pContext) { m_pCameraUpdatedContext = pContext; }
 
 	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
 	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext);
 
-	//카메라를 변경할 때 호출되는 함수이다.
-	CCamera *OnChangeCamera(ID3D11Device *pd3dDevice, DWORD nNewCameraMode, DWORD nCurrentCameraMode);
-	virtual void ChangeCamera(ID3D11Device *pd3dDevice, DWORD nNewCameraMode, float fTimeElapsed) { }
+	////카메라를 변경할 때 호출되는 함수이다.
+	//CCamera *OnChangeCamera(ID3D11Device *pd3dDevice, DWORD nNewCameraMode, DWORD nCurrentCameraMode);
+	//virtual void ChangeCamera(ID3D11Device *pd3dDevice, DWORD nNewCameraMode, float fTimeElapsed) { }
 
 	//플레이어의 카메라가 3인칭 카메라일 때 플레이어 메쉬를 렌더링한다.
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
@@ -108,6 +107,6 @@ public:
 	CAirplanePlayer(ID3D11Device *pd3dDevice);
 	~CAirplanePlayer();
 
-	virtual void ChangeCamera(ID3D11Device *pd3dDevice, DWORD nNewCameraMode, float fTimeElapsed);
+	//virtual void ChangeCamera(ID3D11Device *pd3dDevice, DWORD nNewCameraMode, float fTimeElapsed);
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 };

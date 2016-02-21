@@ -74,19 +74,19 @@ void CScene::AnimateObjects(float fTimeElapsed)
 
 void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext, CCamera *pCamera)
 {
-	if (m_pLights && m_pd3dcbLights)
-	{
-		/*두 번째 조명은 플레이어가 가지고 있는 손전등이다.
-		그러므로 카메라의 위치가 바뀌면 조명의 위치와 방향을
-		카메라의 위치와 방향으로 변경한다.*/
-		D3DXVECTOR3 d3dxvCameraPosition = pCamera->GetPosition();
-		m_pLights->m_d3dxvCameraPosition = D3DXVECTOR4(d3dxvCameraPosition, 1.0f);
+	//if (m_pLights && m_pd3dcbLights)
+	//{
+		///*두 번째 조명은 플레이어가 가지고 있는 손전등이다.
+		//그러므로 카메라의 위치가 바뀌면 조명의 위치와 방향을
+		//카메라의 위치와 방향으로 변경한다.*/
+		//D3DXVECTOR3 d3dxvCameraPosition = pCamera->GetPosition();
+		//m_pLights->m_d3dxvCameraPosition = D3DXVECTOR4(d3dxvCameraPosition, 1.0f);
 
-		m_pLights->m_pLights[1].m_d3dxvPosition = d3dxvCameraPosition;
-		m_pLights->m_pLights[1].m_d3dxvDirection = pCamera->GetLookVector();
+		//m_pLights->m_pLights[1].m_d3dxvPosition = d3dxvCameraPosition;
+		//m_pLights->m_pLights[1].m_d3dxvDirection = pCamera->GetLookVector();
 
 		UpdateLights(pd3dDeviceContext);
-	}
+	//}
 
 	for (int i = 0; i < m_nShaders; i++)
 	{

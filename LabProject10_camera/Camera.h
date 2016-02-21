@@ -14,13 +14,12 @@ struct VS_CB_VIEWPROJECTION_MATRIX
 	D3DXMATRIX m_d3dxmtxProjection;
 };
 
-class CPlayer;
 
 class CCamera
 {
 public:
 	//CCamera 클래스의 기본 생성자를 다음과 같이 변경한다.
-	CCamera(CCamera *pCamera);
+	CCamera();
 	~CCamera();
 
 	void SetMode(DWORD nMode) { m_nMode = nMode; }
@@ -30,9 +29,6 @@ public:
 
 	void CreateShaderVariables(ID3D11Device *pd3dDevice);
 	void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext);
-
-	void SetPlayer(CPlayer *pPlayer) { m_pPlayer = pPlayer; }
-	CPlayer *GetPlayer() { return(m_pPlayer); }
 
 	void SetViewport(ID3D11DeviceContext *pd3dDeviceContext, DWORD xStart, DWORD yStart, DWORD nWidth, DWORD nHeight, float fMinZ = 0.0f, float fMaxZ = 1.0f);
 	D3D11_VIEWPORT GetViewport() { return(m_d3dViewport); }
@@ -66,7 +62,7 @@ public:
 	//카메라를 x-축, y-축, z-축으로 회전하는 가상함수이다.
 	virtual void Rotate(float fPitch = 0.0f, float fYaw = 0.0f, float fRoll = 0.0f) { }
 	//카메라의 이동, 회전에 따라 카메라의 정보를 갱신하는 가상함수이다.
-	virtual void Update(float fTimeElapsed) { }
+	virtual void Update(const D3DXVECTOR3 *pd3dxvPosition, float fTimeElapsed) {}
 	/*3인칭 카메라에서 카메라가 바라보는 지점을 설정하는 가상함수이다. 일반적으로 플레이어를 바라보도록 설정한다.*/
 	virtual void SetLookAt(D3DXVECTOR3& vLookAt) { }
 
@@ -105,9 +101,6 @@ protected:
 	ID3D11Buffer *m_pd3dcbViewProjection;
 	ID3D11Buffer *m_pd3dcbCamera;
 
-	//플레이어 객체에 대한 포인터를 선언한다.
-	CPlayer *m_pPlayer;
-
 public:
 	//카메라 변환행렬을 생성한다.
 	void GenerateViewMatrix();
@@ -123,8 +116,9 @@ public:
 class CThirdPersonCamera : public CCamera
 {
 public:
-	CThirdPersonCamera(CCamera *pCamera);
+	CThirdPersonCamera();
 
-	virtual void Update(float fTimeScale);
+	//virtual void Update(float fTimeScale);
+	virtual void Update(const D3DXVECTOR3 *pd3dxvPosition, float fTimeElapsed);
 	virtual void SetLookAt(D3DXVECTOR3& vLookAt);
 };

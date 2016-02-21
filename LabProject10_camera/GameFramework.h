@@ -3,6 +3,7 @@
 #include "Timer.h"
 #include "Player.h"
 #include "Scene.h"
+#include "Camera.h"
 
 class CGameFramework
 {
@@ -16,6 +17,7 @@ private:
 	//player는 보통 1인이나, 둘 이상으로 할 수 있으므로 배열로 선언한다
 	int m_nPlayers;
 	CPlayer **m_ppPlayers;
+	CCamera *m_pCamera;
 
 	//디바이스 인터페이스에 대한 포인터이다. 주로 리소스를 생성하기 위하여 필요하다.
 	ID3D11Device *m_pd3dDevice;
