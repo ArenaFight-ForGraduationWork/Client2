@@ -6,7 +6,7 @@ CGameFramework::CGameFramework()
 	m_pPlayer = nullptr;
 	m_pCamera = nullptr;
 
-	m_OperationMode = MODE_MOUSE;
+	m_OperationMode = MODE_KEYBOARD;
 
 	m_pd3dDevice = NULL;
 	m_pDXGISwapChain = NULL;
@@ -274,7 +274,7 @@ void CGameFramework::BuildObjects()
 
 	// 2) 카메라 update
 	m_pCamera->Update(&(m_pPlayer->GetPosition()));
-	m_pCamera->SetLookAt(D3DXVECTOR3(0, 0, 0));
+	m_pCamera->SetLookAt(&D3DXVECTOR3(0, 0, 0));
 	m_pCamera->RegenerateViewMatrix();
 
 	// 3) 카메라 set 마저
@@ -346,8 +346,8 @@ void CGameFramework::ProcessInput()
 			if (pKeyBuffer[VK_DOWN] & 0xF0) dwDirection |= DIR_BACKWARD;
 			if (pKeyBuffer[VK_LEFT] & 0xF0) dwDirection |= DIR_LEFT;
 			if (pKeyBuffer[VK_RIGHT] & 0xF0) dwDirection |= DIR_RIGHT;
-			if (pKeyBuffer[0x51] & 0xF0) m_pCamera->RotatebyYaw(-50 * m_GameTimer.GetTimeElapsed());
-			if (pKeyBuffer[0x45] & 0xF0) m_pCamera->RotatebyYaw(50 * m_GameTimer.GetTimeElapsed());
+			if (pKeyBuffer[0x51] & 0xF0) m_pCamera->RotatebyYaw(100 * m_GameTimer.GetTimeElapsed());
+			if (pKeyBuffer[0x45] & 0xF0) m_pCamera->RotatebyYaw(-100 * m_GameTimer.GetTimeElapsed());
 		}
 
 		if (dwDirection) m_pPlayer->Move(dwDirection, 50.0f* m_GameTimer.GetTimeElapsed(), false);
