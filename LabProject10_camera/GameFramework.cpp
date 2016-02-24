@@ -265,15 +265,43 @@ void CGameFramework::BuildObjects()
 {
 	m_pScene = new CScene();
 
-	m_pPlayer = new CAirplanePlayer(m_pd3dDevice);
-	m_pPlayer->SetPosition(D3DXVECTOR3(0, 0, 0));
+	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice);
+
+	m_pPlayer = new CPlayer();
+	CGameObject *pObject = new CGameObject();
+	{
+		//객체들의 물질의 색상은 빨강색, 녹색, 파란색이다.
+		CMaterial **ppMaterials = new CMaterial*[1];
+		ppMaterials[0] = new CMaterial();
+		ppMaterials[0]->m_Material.m_d3dxcDiffuse = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
+		ppMaterials[0]->m_Material.m_d3dxcAmbient = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
+		ppMaterials[0]->m_Material.m_d3dxcSpecular = D3DXCOLOR(1.0f, 1.0f, 1.0f, 5.0f);
+		ppMaterials[0]->m_Material.m_d3dxcEmissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
+
+		CCubeMeshIlluminated *pCubeMeshIlluminated = new CCubeMeshIlluminated(m_pd3dDevice, 12.0f, 12.0f, 12.0f);
+
+		pObject->SetMesh(pCubeMeshIlluminated);
+		pObject->SetMaterial(ppMaterials[0]);
+		pObject->SetPosition(0,0,0);
+		//m_ppObjects[i++] = pRotatingObject;
+	}
+	m_pPlayer->SetObject(pObject);
+	{
+		//m_ppObjects = new CGameObject*[m_nObjects];
+		CGameObject **ppObject = new CGameObject*[m_pScene->m_ppShaders[1]->m_nObjects];
+		for (short i = 0; i < m_pScene->m_ppShaders[1]->m_nObjects; ++i)
+			ppObject[i] = m_pScene->m_ppShaders[1]->m_ppObjects[i];
+		ppObject[m_pScene->m_ppShaders[1]->m_nObjects] = pObject;
+		
+		m_pScene->m_ppShaders[1]->m_ppObjects = ppObject;
+	}
 
 	// 1) 카메라 init
 	m_pCamera = new CThirdPersonCamera();
 	m_pCamera->CreateShaderVariables(m_pd3dDevice);
 
 	// 2) 카메라 update
-	m_pCamera->Update(&(m_pPlayer->GetPosition()));
+	m_pCamera->Update(m_pPlayer->GetPosition());
 	m_pCamera->SetLookAt(&D3DXVECTOR3(0, 0, 0));
 	m_pCamera->RegenerateViewMatrix();
 
@@ -281,8 +309,6 @@ void CGameFramework::BuildObjects()
 	m_pCamera->SetViewport(m_pd3dDeviceContext, 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 	m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 	m_pCamera->GenerateViewMatrix();
-
-	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice);
 }
 
 
@@ -334,7 +360,8 @@ void CGameFramework::ProcessInput()
 				else
 					m_pCamera->RotatebyYaw(-50 * m_GameTimer.GetTimeElapsed());
 			}
-			if (dwDirection) m_pPlayer->Move(dwDirection, 50.0f* m_GameTimer.GetTimeElapsed(), false);
+			//if (dwDirection) m_pPlayer->Move(dwDirection, 50.0f* m_GameTimer.GetTimeElapsed(), false);
+			//if (dwDirection) m_pPlayer->Move(m_pCamera->pitch)
 		}
 	}
 	break;
@@ -350,7 +377,7 @@ void CGameFramework::ProcessInput()
 			if (pKeyBuffer[0x45] & 0xF0) m_pCamera->RotatebyYaw(-100 * m_GameTimer.GetTimeElapsed());
 		}
 
-		if (dwDirection) m_pPlayer->Move(dwDirection, 50.0f* m_GameTimer.GetTimeElapsed(), false);
+		//if (dwDirection) m_pPlayer->Move(dwDirection, 50.0f* m_GameTimer.GetTimeElapsed(), false);
 	}
 	break;
 	}
