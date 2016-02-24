@@ -36,7 +36,7 @@ struct LIGHTS
 
 class CScene
 {
-public:
+private:
 	CShader  **m_ppShaders;
 	int m_nShaders;
 
@@ -44,6 +44,8 @@ public:
 	int m_nObjects;
 	// 얘 부분은 없애야 할 것 같어
 
+public:
+public:
 	CScene();
 	~CScene();
 
