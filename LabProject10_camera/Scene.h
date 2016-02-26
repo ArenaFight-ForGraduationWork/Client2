@@ -40,7 +40,7 @@ private:
 	CShader  **m_ppShaders;
 	int m_nShaders;
 
-	CGameObject **m_ppObjects;
+	CObject **m_ppObjects;
 	int m_nObjects;
 	// 얘 부분은 없애야 할 것 같어
 
@@ -57,7 +57,7 @@ public:
 
 	bool ProcessInput();
 	void AnimateObjects(float fTimeElapsed);
-	void Render(ID3D11DeviceContext*pd3dDeviceContext, CCamera *pCamera);
+	void Render(ID3D11DeviceContext*pd3dDeviceContext);
 
 	LIGHTS *m_pLights;
 	ID3D11Buffer *m_pd3dcbLights;

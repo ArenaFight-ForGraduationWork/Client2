@@ -26,7 +26,7 @@ public:
 	virtual void BuildObjects(ID3D11Device *pd3dDevice);
 	virtual void ReleaseObjects();
 	virtual void AnimateObjects(float fTimeElapsed);
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera = NULL);
+	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 
 public:
 	ID3D11VertexShader *m_pd3dVertexShader;
@@ -36,7 +36,7 @@ public:
 
 	ID3D11GeometryShader *m_pd3dGeometryShader;
 
-	CGameObject **m_ppObjects;
+	CObject **m_ppObjects;
 	int m_nObjects;
 
 	ID3D11Buffer *m_pd3dcbWorldMatrix;
@@ -58,7 +58,7 @@ public:
 	virtual void BuildObjects(ID3D11Device *pd3dDevice);
 	virtual void ReleaseObjects();
 	virtual void AnimateObjects(float fTimeElapsed);
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera = NULL);
+	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 };
 // 조명을 사용하여 렌더링하기 위한 CIlluminatedShader 클래스
 class CIlluminatedShader : public CShader
@@ -75,7 +75,7 @@ public:
 	virtual void BuildObjects(ID3D11Device *pd3dDevice);
 	virtual void ReleaseObjects();
 	virtual void AnimateObjects(float fTimeElapsed);
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera = NULL);
+	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 };
 // 텍스쳐 맵핑을 사용하여 렌더링하기 위한 CTexturedShader 클래스
 class CTexturedShader : public CShader
@@ -110,6 +110,6 @@ public:
 	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, D3DXMATRIX *pd3dxmtxWorld = NULL);
 
 	virtual void ReleaseObjects();
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera = NULL);
+	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 };
 

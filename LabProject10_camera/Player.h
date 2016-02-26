@@ -4,7 +4,7 @@
 #include "Shader.h"
 
 
-class CPlayer : public CGameObject
+class CPlayer : public CObject
 {
 protected:
 	//플레이어의 위치 벡터, x-축(Right), y-축(Up), z-축(Look) 벡터이다.

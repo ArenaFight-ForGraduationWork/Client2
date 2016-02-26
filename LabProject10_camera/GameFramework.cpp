@@ -380,13 +380,12 @@ void CGameFramework::FrameAdvance()
 	if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
 	if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-	CCamera *pCamera = NULL;
 	m_pPlayer->UpdateShaderVariables(m_pd3dDeviceContext);
 
 	// 5) 카메라 쉐이더 update
 	if (m_pCamera) m_pCamera->UpdateShaderVariables(m_pd3dDeviceContext);
 
-	if (m_pScene) m_pScene->Render(m_pd3dDeviceContext, pCamera);
+	if (m_pScene) m_pScene->Render(m_pd3dDeviceContext);
 	//3인칭 카메라일 때 플레이어를 렌더링한다.
 	if (m_pPlayer) m_pPlayer->Render(m_pd3dDeviceContext);
 

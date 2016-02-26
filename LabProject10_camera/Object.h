@@ -1,15 +1,12 @@
-#pragma once
+#ifndef OBJECT_H_
+#define OBJECT_H_
 
-#include "Camera.h"
+
+
 #include "Mesh.h"
 
-#define DIR_FORWARD	0x01
-#define DIR_BACKWARD	0x02
-#define DIR_LEFT	0x04
-#define DIR_RIGHT	0x08
-#define DIR_UP		0x10
-#define DIR_DOWN	0x20
 
+/* 재질 관련 정보를 표현 */
 struct MATERIAL
 {
 	D3DXCOLOR m_d3dxcAmbient;
@@ -49,11 +46,11 @@ public:
 };
 
 
-class CGameObject
+class CObject
 {
 public:
-	CGameObject();
-	virtual ~CGameObject();
+	CObject();
+	virtual ~CObject();
 
 	//객체의 위치를 설정한다.
 	virtual void SetPosition(float x, float y, float z);
@@ -88,17 +85,17 @@ public:
 	virtual void SetMesh(CMesh *pMesh);
 	void SetMaterial(CMaterial *pMaterial);
 	virtual void Animate(float fTimeElapsed);
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera = NULL);
+	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 };
 
-class CRotatingObject : public CGameObject
+class CRotatingObject : public CObject
 {
 public:
 	CRotatingObject();
 	virtual ~CRotatingObject();
 
 	virtual void Animate(float fTimeElapsed);
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);
+	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 
 	//자전 속도와 회전축 벡터를 설정하는 함수이다.
 	void SetRotationSpeed(float fRotationSpeed) { m_fRotationSpeed = fRotationSpeed; }
@@ -109,3 +106,6 @@ private:
 	float m_fRotationSpeed;
 	D3DXVECTOR3 m_d3dxvRotationAxis;
 };
+
+
+#endif

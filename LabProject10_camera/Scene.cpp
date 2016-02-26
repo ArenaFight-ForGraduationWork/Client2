@@ -72,7 +72,7 @@ void CScene::AnimateObjects(float fTimeElapsed)
 	}
 }
 
-void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext, CCamera *pCamera)
+void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext)
 {
 	//if (m_pLights && m_pd3dcbLights)
 	//{
@@ -90,7 +90,7 @@ void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext, CCamera *pCamera)
 
 	for (int i = 0; i < m_nShaders; i++)
 	{
-		m_ppShaders[i]->Render(pd3dDeviceContext, pCamera);
+		m_ppShaders[i]->Render(pd3dDeviceContext);
 	}
 }
 
