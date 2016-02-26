@@ -45,18 +45,18 @@ void CPlayer::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext)
 /*플레이어의 위치와 회전축으로부터 월드 변환 행렬을 생성하는 함수이다. 플레이어의 Right 벡터가 월드 변환 행렬의 첫 번째 행 벡터, Up 벡터가 두 번째 행 벡터, Look 벡터가 세 번째 행 벡터, 플레이어의 위치 벡터가 네 번째 행 벡터가 된다.*/
 void CPlayer::RegenerateWorldMatrix()
 {
-	m_d3dxmtxWorld._11 = m_d3dxvRight.x;
-	m_d3dxmtxWorld._12 = m_d3dxvRight.y;
-	m_d3dxmtxWorld._13 = m_d3dxvRight.z;
-	m_d3dxmtxWorld._21 = m_d3dxvUp.x;
-	m_d3dxmtxWorld._22 = m_d3dxvUp.y;
-	m_d3dxmtxWorld._23 = m_d3dxvUp.z;
-	m_d3dxmtxWorld._31 = m_d3dxvLook.x;
-	m_d3dxmtxWorld._32 = m_d3dxvLook.y;
-	m_d3dxmtxWorld._33 = m_d3dxvLook.z;
-	m_d3dxmtxWorld._41 = m_d3dxvPosition.x;
-	m_d3dxmtxWorld._42 = m_d3dxvPosition.y;
-	m_d3dxmtxWorld._43 = m_d3dxvPosition.z;
+	GetWorldMatrix()->_11 = m_d3dxvRight.x;
+	GetWorldMatrix()->_12 = m_d3dxvRight.y;
+	GetWorldMatrix()->_13 = m_d3dxvRight.z;
+	GetWorldMatrix()->_21 = m_d3dxvUp.x;
+	GetWorldMatrix()->_22 = m_d3dxvUp.y;
+	GetWorldMatrix()->_23 = m_d3dxvUp.z;
+	GetWorldMatrix()->_31 = m_d3dxvLook.x;
+	GetWorldMatrix()->_32 = m_d3dxvLook.y;
+	GetWorldMatrix()->_33 = m_d3dxvLook.z;
+	GetWorldMatrix()->_41 = m_d3dxvPosition.x;
+	GetWorldMatrix()->_42 = m_d3dxvPosition.y;
+	GetWorldMatrix()->_43 = m_d3dxvPosition.z;
 }
 
 /*플레이어의 위치를 변경하는 함수이다. 플레이어의 위치는 기본적으로 사용자가 플레이어를 이동하기 위한 키보드를 누를 때 변경된다. 플레이어의 이동 방향(dwDirection)에 따라 플레이어를 fDistance 만큼 이동한다.*/
@@ -234,10 +234,10 @@ void CPlayer::Render(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	if (m_pShader)
 	{
-		m_pShader->UpdateShaderVariables(pd3dDeviceContext, &m_d3dxmtxWorld);
+		m_pShader->UpdateShaderVariables(pd3dDeviceContext, GetWorldMatrix());
 		m_pShader->Render(pd3dDeviceContext);
 	}
-	if (m_pMesh) m_pMesh->Render(pd3dDeviceContext);
+	if (GetMesh()) GetMesh()->Render(pd3dDeviceContext);
 }
 
 void CPlayer::OnPlayerUpdated(float fTimeElapsed)
@@ -276,7 +276,7 @@ void CAirplanePlayer::Render(ID3D11DeviceContext *pd3dDeviceContext)
 		D3DXMATRIX mtxRotate;
 		// 3인칭 카메라일 때 플레이어 메쉬를 로컬 x-축을 중심으로 +90도 회전하고 렌더링한다.
 		D3DXMatrixRotationYawPitchRoll(&mtxRotate, 0.0f, (float)D3DXToRadian(90.0f), 0.0f);
-		m_d3dxmtxWorld = mtxRotate * m_d3dxmtxWorld;
+		*(GetWorldMatrix()) = mtxRotate * *(GetWorldMatrix());
 
 		CPlayer::Render(pd3dDeviceContext);
 	//}

@@ -71,40 +71,46 @@ public:
 	CObject();
 	virtual ~CObject();
 
-	//객체의 위치를 설정한다.
-	virtual void SetPosition(float x, float y, float z);
-	virtual void SetPosition(D3DXVECTOR3 d3dxvPosition);
-
-	//로컬 x-축, y-축, z-축 방향으로 이동한다.
-	virtual void MoveStrafe(float fDistance = 1.0f);
-	virtual void MoveUp(float fDistance = 1.0f);
+	void MoveRelative(const float fx, const float fy, const float fz);
+	void MoveRelative(const D3DXVECTOR3 *d3dxVec);
+	void MoveAbsolute(const float fx, const float fy, const float fz);
+	void MoveAbsolute(const D3DXVECTOR3 *d3dxVec);
+	/* 로컬 Z축 방향으로 이동한다 */
 	virtual void MoveForward(float fDistance = 1.0f);
 
-	//로컬 x-축, y-축, z-축 방향으로 회전한다.
-	virtual void Rotate(float fPitch = 10.0f, float fYaw = 10.0f, float fRoll = 10.0f);
-	virtual void Rotate(D3DXVECTOR3 *pd3dxvAxis, float fAngle);
+	void RotateRelative(const float fPitch, const float fYaw, const float fRoll);
+	void RotateRelative(const D3DXVECTOR3 *d3dxVec);
+	void RotateRelative(const D3DXVECTOR3 *pd3dxvAxis, const float fAngle);
+	void RotateAbsolute(const float fPitch, const float fYaw, const float fRoll);
+	void RotateAbsolute(const D3DXVECTOR3 *d3dxVec);
+	void RotateAbsolute(const D3DXVECTOR3 *pd3dxvAxis, const float fAngle);
 
 	//객체의 위치, 로컬 x-축, y-축, z-축 방향 벡터를 반환한다.
-	D3DXVECTOR3 GetPosition();
-	D3DXVECTOR3 GetLookAt();
-	D3DXVECTOR3 GetUp();
-	D3DXVECTOR3 GetRight();
-private:
-	int m_nReferences;
-public:
-	void AddRef();
-	void Release();
+	const D3DXVECTOR3* GetPosition();
+	const D3DXVECTOR3* GetRight();
+	const D3DXVECTOR3* GetUp();
+	const D3DXVECTOR3* GetLookAt();
 
-	D3DXMATRIX m_d3dxmtxWorld;
+	D3DXMATRIX* GetWorldMatrix() { return m_pd3dxmtxWorld; }
+
+	virtual void SetMesh(CMesh *pMesh);
+	CMesh* GetMesh() { return m_pMesh; }
+	void SetMaterial(CMaterial *pMaterial);
+	CMaterial* GetMaterial() { return m_pMaterial; }
+	void SetTexture(CTexture *pTexture);
+	CTexture* GetTexture() { return m_pTexture; }
+
+	virtual void Animate(float fTimeElapsed);
+	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
+
+private:
+	D3DXMATRIX *m_pd3dxmtxWorld;
+
 	CMesh *m_pMesh;
 	CMaterial *m_pMaterial;
 	CTexture *m_pTexture;
-	void SetTexture(CTexture *pTexture);
 
-	virtual void SetMesh(CMesh *pMesh);
-	void SetMaterial(CMaterial *pMaterial);
-	virtual void Animate(float fTimeElapsed);
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
+	const D3DXMATRIX* _GetRotationMatrix();
 };
 
 class CRotatingObject : public CObject
@@ -124,6 +130,8 @@ private:
 	//자전 속도와 회전축 벡터를 나타내는 멤버 변수를 선언한다.
 	float m_fRotationSpeed;
 	D3DXVECTOR3 m_d3dxvRotationAxis;
+
+	float temp;
 };
 
 

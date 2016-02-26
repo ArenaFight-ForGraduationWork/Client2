@@ -44,7 +44,7 @@ void CScene::ReleaseObjects()
 	//게임 객체 리스트의 각 객체를 반환(Release)하고 리스트를 소멸시킨다.
 	if (m_ppObjects)
 	{
-		for (int j = 0; j < m_nObjects; j++) m_ppObjects[j]->Release();
+		//for (int j = 0; j < m_nObjects; j++) m_ppObjects[j]->Release();
 		delete[] m_ppObjects;
 	}
 }
