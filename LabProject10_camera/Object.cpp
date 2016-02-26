@@ -24,14 +24,16 @@ void CMaterial::Release()
 
 
 
+
 CTexture::CTexture(int nTextures)
 {
 	m_nReferences = 0;
 	m_nTextures = nTextures;
+
 	m_ppd3dsrvTextures = new ID3D11ShaderResourceView*[m_nTextures];
-	for (int i = 0; i < m_nTextures; i++) m_ppd3dsrvTextures[i] = NULL;
+	for (int i = 0; i < m_nTextures; ++i) m_ppd3dsrvTextures[i] = nullptr;
 	m_ppd3dSamplerStates = new ID3D11SamplerState*[m_nTextures];
-	for (int i = 0; i < m_nTextures; i++) m_ppd3dSamplerStates[i] = NULL;
+	for (int i = 0; i < m_nTextures; ++i) m_ppd3dSamplerStates[i] = nullptr;
 }
 
 CTexture::~CTexture()
@@ -48,7 +50,7 @@ void CTexture::AddRef()
 void CTexture::Release()
 {
 	if (m_nReferences > 0) m_nReferences--;
-	for (int i = 0; i < m_nTextures; i++)
+	for (int i = 0; i < m_nTextures; ++i)
 	{
 		if (m_ppd3dsrvTextures[i]) m_ppd3dsrvTextures[i]->Release();
 		if (m_ppd3dSamplerStates[i]) m_ppd3dSamplerStates[i]->Release();

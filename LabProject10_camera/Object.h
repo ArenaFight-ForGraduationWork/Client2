@@ -31,22 +31,38 @@ private:
 	MATERIAL *m_pMaterial;
 };
 
+
+
+
+
 class CTexture
 {
 public:
 	CTexture(int nTextures);
 	virtual ~CTexture();
 
-	int m_nReferences;
 	void AddRef();
 	void Release();
-
+	
+	/* nIndex번째 인덱스 자리에 텍스쳐를 설정한다 */
 	void SetTexture(int nIndex, ID3D11ShaderResourceView *pd3dsrvTexture, ID3D11SamplerState *pd3dSamplerState);
+
+	int& GetNumOfTextures() { return m_nTextures; }
+
+	ID3D11ShaderResourceView** GetShaderResourceViewTextures() { return m_ppd3dsrvTextures; }
+	ID3D11SamplerState** GetSamplerState() { return m_ppd3dSamplerStates; }
+
+private:
+	int m_nReferences;
 
 	ID3D11ShaderResourceView **m_ppd3dsrvTextures;
 	ID3D11SamplerState **m_ppd3dSamplerStates;
+
 	int m_nTextures;
 };
+
+
+
 
 
 class CObject
