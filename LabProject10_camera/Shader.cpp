@@ -135,7 +135,7 @@ void CShader::Render(ID3D11DeviceContext *pd3dDeviceContext)
 	{
 		// 여기
 		if (m_ppObjects[j]->m_pMaterial)
-			UpdateShaderVariables(pd3dDeviceContext, &m_ppObjects[j]->m_pMaterial->m_Material);
+			UpdateShaderVariables(pd3dDeviceContext, m_ppObjects[j]->m_pMaterial->GetMaterial());
 		if (m_ppObjects[j]->m_pTexture) 
 			UpdateShaderVariables(pd3dDeviceContext, m_ppObjects[j]->m_pTexture);
 		UpdateShaderVariables(pd3dDeviceContext, &m_ppObjects[j]->m_d3dxmtxWorld);
@@ -297,20 +297,20 @@ void CIlluminatedShader::BuildObjects(ID3D11Device *pd3dDevice)
 	//객체들의 물질의 색상은 빨강색, 녹색, 파란색이다.
 	CMaterial **ppMaterials = new CMaterial*[3];
 	ppMaterials[0] = new CMaterial();
-	ppMaterials[0]->m_Material.m_d3dxcDiffuse = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
-	ppMaterials[0]->m_Material.m_d3dxcAmbient = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
-	ppMaterials[0]->m_Material.m_d3dxcSpecular = D3DXCOLOR(1.0f, 1.0f, 1.0f, 5.0f);
-	ppMaterials[0]->m_Material.m_d3dxcEmissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
+	ppMaterials[0]->GetMaterial()->m_d3dxcDiffuse = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
+	ppMaterials[0]->GetMaterial()->m_d3dxcAmbient = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
+	ppMaterials[0]->GetMaterial()->m_d3dxcSpecular = D3DXCOLOR(1.0f, 1.0f, 1.0f, 5.0f);
+	ppMaterials[0]->GetMaterial()->m_d3dxcEmissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 	ppMaterials[1] = new CMaterial();
-	ppMaterials[1]->m_Material.m_d3dxcDiffuse = D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f);
-	ppMaterials[1]->m_Material.m_d3dxcAmbient = D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f);
-	ppMaterials[1]->m_Material.m_d3dxcSpecular = D3DXCOLOR(1.0f, 1.0f, 1.0f, 10.0f);
-	ppMaterials[1]->m_Material.m_d3dxcEmissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
+	ppMaterials[1]->GetMaterial()->m_d3dxcDiffuse = D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f);
+	ppMaterials[1]->GetMaterial()->m_d3dxcAmbient = D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f);
+	ppMaterials[1]->GetMaterial()->m_d3dxcSpecular = D3DXCOLOR(1.0f, 1.0f, 1.0f, 10.0f);
+	ppMaterials[1]->GetMaterial()->m_d3dxcEmissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 	ppMaterials[2] = new CMaterial();
-	ppMaterials[2]->m_Material.m_d3dxcDiffuse = D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f);
-	ppMaterials[2]->m_Material.m_d3dxcAmbient = D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f);
-	ppMaterials[2]->m_Material.m_d3dxcSpecular = D3DXCOLOR(1.0f, 0.0f, 1.0f, 10.0f);
-	ppMaterials[2]->m_Material.m_d3dxcEmissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
+	ppMaterials[2]->GetMaterial()->m_d3dxcDiffuse = D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f);
+	ppMaterials[2]->GetMaterial()->m_d3dxcAmbient = D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f);
+	ppMaterials[2]->GetMaterial()->m_d3dxcSpecular = D3DXCOLOR(1.0f, 0.0f, 1.0f, 10.0f);
+	ppMaterials[2]->GetMaterial()->m_d3dxcEmissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 
 	CCubeMeshIlluminated *pCubeMeshIlluminated = new CCubeMeshIlluminated(pd3dDevice, 12.0f, 12.0f, 12.0f);
 	CSphereMeshIlluminated *pSphereMeshIlluminated = new CSphereMeshIlluminated(pd3dDevice, 12.0f, 40, 40);
@@ -456,20 +456,20 @@ void CIlluminatedTexturedShader::BuildObjects(ID3D11Device *pd3dDevice)
 {
 	CMaterial **ppMaterials = new CMaterial*[3];
 	ppMaterials[0] = new CMaterial();
-	ppMaterials[0]->m_Material.m_d3dxcDiffuse = D3DXCOLOR(0.5f, 0.0f, 0.0f, 1.0f);
-	ppMaterials[0]->m_Material.m_d3dxcAmbient = D3DXCOLOR(0.5f, 0.0f, 0.0f, 1.0f);
-	ppMaterials[0]->m_Material.m_d3dxcSpecular = D3DXCOLOR(0.5f, 0.5f, 0.5f, 5.0f);
-	ppMaterials[0]->m_Material.m_d3dxcEmissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
+	ppMaterials[0]->GetMaterial()->m_d3dxcDiffuse = D3DXCOLOR(0.5f, 0.0f, 0.0f, 1.0f);
+	ppMaterials[0]->GetMaterial()->m_d3dxcAmbient = D3DXCOLOR(0.5f, 0.0f, 0.0f, 1.0f);
+	ppMaterials[0]->GetMaterial()->m_d3dxcSpecular = D3DXCOLOR(0.5f, 0.5f, 0.5f, 5.0f);
+	ppMaterials[0]->GetMaterial()->m_d3dxcEmissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 	ppMaterials[1] = new CMaterial();
-	ppMaterials[1]->m_Material.m_d3dxcDiffuse = D3DXCOLOR(0.0f, 0.5f, 0.0f, 1.0f);
-	ppMaterials[1]->m_Material.m_d3dxcAmbient = D3DXCOLOR(0.0f, 0.5f, 0.0f, 1.0f);
-	ppMaterials[1]->m_Material.m_d3dxcSpecular = D3DXCOLOR(0.5f, 0.5f, 0.5f, 10.0f);
-	ppMaterials[1]->m_Material.m_d3dxcEmissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
+	ppMaterials[1]->GetMaterial()->m_d3dxcDiffuse = D3DXCOLOR(0.0f, 0.5f, 0.0f, 1.0f);
+	ppMaterials[1]->GetMaterial()->m_d3dxcAmbient = D3DXCOLOR(0.0f, 0.5f, 0.0f, 1.0f);
+	ppMaterials[1]->GetMaterial()->m_d3dxcSpecular = D3DXCOLOR(0.5f, 0.5f, 0.5f, 10.0f);
+	ppMaterials[1]->GetMaterial()->m_d3dxcEmissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 	ppMaterials[2] = new CMaterial();
-	ppMaterials[2]->m_Material.m_d3dxcDiffuse = D3DXCOLOR(0.0f, 0.0f, 0.5f, 1.0f);
-	ppMaterials[2]->m_Material.m_d3dxcAmbient = D3DXCOLOR(0.0f, 0.0f, 0.5f, 1.0f);
-	ppMaterials[2]->m_Material.m_d3dxcSpecular = D3DXCOLOR(0.5f, 0.0f, 0.5f, 10.0f);
-	ppMaterials[2]->m_Material.m_d3dxcEmissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
+	ppMaterials[2]->GetMaterial()->m_d3dxcDiffuse = D3DXCOLOR(0.0f, 0.0f, 0.5f, 1.0f);
+	ppMaterials[2]->GetMaterial()->m_d3dxcAmbient = D3DXCOLOR(0.0f, 0.0f, 0.5f, 1.0f);
+	ppMaterials[2]->GetMaterial()->m_d3dxcSpecular = D3DXCOLOR(0.5f, 0.0f, 0.5f, 10.0f);
+	ppMaterials[2]->GetMaterial()->m_d3dxcEmissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 
 	ID3D11SamplerState *pd3dSamplerState = NULL;
 	D3D11_SAMPLER_DESC d3dSamplerDesc;

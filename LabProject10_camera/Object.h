@@ -21,11 +21,14 @@ public:
 	CMaterial();
 	virtual ~CMaterial();
 
-	int m_nReferences;
 	void AddRef();
 	void Release();
 
-	MATERIAL m_Material;
+	MATERIAL* GetMaterial() { return m_pMaterial; }
+
+private:
+	int m_nReferences;
+	MATERIAL *m_pMaterial;
 };
 
 class CTexture

@@ -4,8 +4,8 @@
 CMaterial::CMaterial()
 {
 	m_nReferences = 0;
+	m_pMaterial = new MATERIAL();
 }
-
 CMaterial::~CMaterial()
 {
 }
@@ -20,6 +20,7 @@ void CMaterial::Release()
 	if (m_nReferences > 0) m_nReferences--;
 	if (m_nReferences == 0) delete this;
 }
+
 
 
 
