@@ -110,6 +110,15 @@ void CCamera::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext)
 	pd3dDeviceContext->VSSetConstantBuffers(NULL, 1, &m_pd3dcbCamera);
 }
 
+const float CCamera::GetYaw()
+{
+	float fYaw = 270 - m_fTheta;
+	if (fYaw < 0) fYaw += 360;
+	else if (fYaw > 359) fYaw -= 360;
+
+	return fYaw;
+}
+
 
 
 
@@ -125,9 +134,10 @@ void CThirdPersonCamera::Update(const D3DXVECTOR3 *pd3dxvPosition)
 	m_pd3dxvPosition->y = pd3dxvPosition->y + 20;
 	m_pd3dxvPosition->z = pd3dxvPosition->z + (m_fDistanceFromObject * sin(theta));
 
-	RegenerateViewMatrix();
 	SetLookAtPosition(*pd3dxvPosition);
 	SetLookAt(GetLookAtPosition());
+
+	RegenerateViewMatrix();
 }
 
 void CThirdPersonCamera::SetLookAt(const D3DXVECTOR3 *pd3dxvLookAt)

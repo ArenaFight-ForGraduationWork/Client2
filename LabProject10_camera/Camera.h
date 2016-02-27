@@ -52,6 +52,8 @@ public:
 	const D3DXVECTOR3* GetUpVector() { return m_pd3dxvUp; }
 	const D3DXVECTOR3* GetLookVector() { return m_pd3dxvLook; }
 
+	const float GetYaw();
+
 	void SetTimeLag(float fTimeLag) { m_fTimeLag = fTimeLag; }
 	float GetTimeLag() { return(m_fTimeLag); }
 
