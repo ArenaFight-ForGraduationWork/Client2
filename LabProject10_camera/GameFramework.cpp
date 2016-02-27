@@ -266,15 +266,38 @@ void CGameFramework::BuildObjects()
 	m_pScene = new CScene();
 	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice);
 
-	m_pPlayer = new CAirplanePlayer(m_pd3dDevice);
-	m_pPlayer->SetPosition(D3DXVECTOR3(0, 0, 0));
+	m_pPlayer = new CPlayer();
+	{
+		CMesh *pMesh = new CAirplaneMesh(m_pd3dDevice, 20.0f, 20.0f, 4.0f, D3DCOLOR_XRGB(0, 255, 0));
+
+		CObject *pObject = new CObject();
+		pObject->SetMesh(pMesh);
+		pObject->MoveRelative(0, 0, 0);
+
+		m_pPlayer->SetObject(pObject);
+
+		//	//플레이어(비행기) 메쉬를 렌더링할 때 사용할 쉐이더를 생성한다.
+		//	m_pShader = new CPlayerShader();
+		//	m_pShader->CreateShader(pd3dDevice);
+		//	m_pShader->CreateShaderVariables(pd3dDevice);
+		//
+		//	//플레이어를 위한 쉐이더 변수를 생성한다.
+		//	CreateShaderVariables(pd3dDevice);
+
+		int iObjectNum = m_pScene->m_ppShaders[0]->m_nObjects + 1;
+		CObject **ppObjects = new CObject*[iObjectNum];
+		for (short i = 0; i < iObjectNum; ++i)
+			ppObjects[i] = m_pScene->m_ppShaders[0]->m_ppObjects[i];
+		ppObjects[iObjectNum - 1] = pObject;
+		m_pScene->m_ppShaders[0]->m_ppObjects = ppObjects;
+	}
 
 	// 1) 카메라 init
 	m_pCamera = new CThirdPersonCamera();
 	m_pCamera->CreateShaderVariables(m_pd3dDevice);
 
 	// 2) 카메라 update
-	m_pCamera->SetLookAt(&(m_pPlayer->GetPosition()));
+	m_pCamera->SetLookAt(m_pPlayer->GetPosition());
 	m_pCamera->RegenerateViewMatrix();
 
 	// 3) 카메라 set 마저
@@ -332,7 +355,6 @@ void CGameFramework::ProcessInput()
 				else
 					m_pCamera->RotatebyYaw(-50 * m_GameTimer.GetTimeElapsed());
 			}
-			if (dwDirection) m_pPlayer->Move(dwDirection, 50.0f* m_GameTimer.GetTimeElapsed(), false);
 		}
 	}
 	break;
@@ -347,17 +369,14 @@ void CGameFramework::ProcessInput()
 			if (pKeyBuffer[0x51] & 0xF0) m_pCamera->RotatebyYaw(100 * m_GameTimer.GetTimeElapsed());
 			if (pKeyBuffer[0x45] & 0xF0) m_pCamera->RotatebyYaw(-100 * m_GameTimer.GetTimeElapsed());
 		}
-
-		if (dwDirection) m_pPlayer->Move(dwDirection, 50.0f* m_GameTimer.GetTimeElapsed(), false);
 	}
 	break;
 	}
-		
-	//플레이어를 실제로 이동하고 카메라를 갱신한다. 중력과 마찰력의 영향을 속도 벡터에 적용한다.
-	m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
+
+	if (dwDirection) m_pPlayer->Move(m_pCamera->GetYaw(), dwDirection, m_GameTimer.GetTimeElapsed());
 
 	// 4) 플레이어 위치에 따라 카메라 update
-	m_pCamera->Update(&(m_pPlayer->GetPosition()));
+	m_pCamera->Update(m_pPlayer->GetPosition());
 }
 
 
@@ -378,14 +397,14 @@ void CGameFramework::FrameAdvance()
 	if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
 	if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-	m_pPlayer->UpdateShaderVariables(m_pd3dDeviceContext);
+	//m_pPlayer->UpdateShaderVariables(m_pd3dDeviceContext);
 
 	// 5) 카메라 쉐이더 update
 	if (m_pCamera) m_pCamera->UpdateShaderVariables(m_pd3dDeviceContext);
 
 	if (m_pScene) m_pScene->Render(m_pd3dDeviceContext);
 	//3인칭 카메라일 때 플레이어를 렌더링한다.
-	if (m_pPlayer) m_pPlayer->Render(m_pd3dDeviceContext);
+	//if (m_pPlayer) m_pPlayer->Render(m_pd3dDeviceContext);
 
 	m_pDXGISwapChain->Present(0, 0);
 
