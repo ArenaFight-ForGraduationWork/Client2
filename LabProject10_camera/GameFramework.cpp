@@ -264,6 +264,7 @@ void CGameFramework::OnDestroy()
 void CGameFramework::BuildObjects()
 {
 	m_pScene = new CScene();
+	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice);
 
 	m_pPlayer = new CAirplanePlayer(m_pd3dDevice);
 	m_pPlayer->SetPosition(D3DXVECTOR3(0, 0, 0));
@@ -273,16 +274,13 @@ void CGameFramework::BuildObjects()
 	m_pCamera->CreateShaderVariables(m_pd3dDevice);
 
 	// 2) 카메라 update
-	m_pCamera->Update(&(m_pPlayer->GetPosition()));
-	m_pCamera->SetLookAt(&D3DXVECTOR3(0, 0, 0));
+	m_pCamera->SetLookAt(&(m_pPlayer->GetPosition()));
 	m_pCamera->RegenerateViewMatrix();
 
 	// 3) 카메라 set 마저
 	m_pCamera->SetViewport(m_pd3dDeviceContext, 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 	m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 	m_pCamera->GenerateViewMatrix();
-
-	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice);
 }
 
 
