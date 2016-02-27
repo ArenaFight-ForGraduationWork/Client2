@@ -52,9 +52,6 @@ public:
 	const D3DXVECTOR3* GetUpVector() { return m_pd3dxvUp; }
 	const D3DXVECTOR3* GetLookVector() { return m_pd3dxvLook; }
 
-	// 360 - (m_fTheta + 90)
-	const float& GetYaw() { return float(270 - m_fTheta); }
-
 	void SetTimeLag(float fTimeLag) { m_fTimeLag = fTimeLag; }
 	float GetTimeLag() { return(m_fTimeLag); }
 
