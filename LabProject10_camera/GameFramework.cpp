@@ -192,9 +192,9 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		{
 		case VK_F1:
 			m_OperationMode = MODE_MOUSE;
+			break;
 		case VK_F2:
 			m_OperationMode = MODE_KEYBOARD;
-		case VK_F3:
 			break;
 		case VK_ESCAPE:
 			::PostQuitMessage(0);
@@ -311,10 +311,10 @@ void CGameFramework::ProcessInput()
 	{
 		if (GetKeyboardState(pKeyBuffer))
 		{
-			if (pKeyBuffer[0x41] & 0xF0) dwDirection |= DIR_LEFT;	// A
-			if (pKeyBuffer[0x44] & 0xF0) dwDirection |= DIR_RIGHT;	// D
-			if (pKeyBuffer[0x57] & 0xF0) dwDirection |= DIR_UP;		// W
-			if (pKeyBuffer[0x53] & 0xF0) dwDirection |= DIR_DOWN;	// S
+			if (pKeyBuffer[0x41] & 0xF0) dwDirection |= DIR_LEFT;		// A
+			if (pKeyBuffer[0x44] & 0xF0) dwDirection |= DIR_RIGHT;		// D
+			if (pKeyBuffer[0x57] & 0xF0) dwDirection |= DIR_FORWARD;	// W
+			if (pKeyBuffer[0x53] & 0xF0) dwDirection |= DIR_BACKWARD;	// S
 		}
 		float cxDelta = 0.0f, cyDelta = 0.0f;
 		POINT ptCursorPos;
@@ -330,14 +330,14 @@ void CGameFramework::ProcessInput()
 			SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
 		}
 		//플레이어를 이동하거나(dwDirection) 회전한다(cxDelta 또는 cyDelta).
-		if ((dwDirection != 0) || (cxDelta != 0.0f) || (cyDelta != 0.0f))
+		if ((cxDelta != 0.0f) || (cyDelta != 0.0f))
 		{
 			if (cxDelta)
 			{
 				if (cxDelta >= 0)
-					m_pCamera->RotatebyYaw(50 * m_GameTimer.GetTimeElapsed());
+					m_pCamera->RotatebyYaw(-100 * m_GameTimer.GetTimeElapsed());
 				else
-					m_pCamera->RotatebyYaw(-50 * m_GameTimer.GetTimeElapsed());
+					m_pCamera->RotatebyYaw(100 * m_GameTimer.GetTimeElapsed());
 			}
 		}
 	}

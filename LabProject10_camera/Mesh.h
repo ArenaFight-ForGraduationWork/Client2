@@ -12,45 +12,36 @@
 class CMesh
 {
 public:
-	//CMesh 클래스의 생성자와 소멸자를 선언한다. 
 	CMesh(ID3D11Device *pd3dDevice);
 	virtual ~CMesh();
 
-	//CMesh 클래스 객체의 참조(Reference)와 관련된 멤버 변수와 함수를 선언한다.
-private:
-	int m_nReferences;
-public:
-	//래스터라이저 래스터라이저 상태 객체에 대한 인터페이스 포인터를 선언한다.
-	ID3D11RasterizerState *m_pd3dRasterizerState;
 	void AddRef();
 	void Release();
+
 	virtual void CreateRasterizerState(ID3D11Device *pd3dDevice);
 
-protected:
-	/*인덱스 버퍼(인덱스의 배열)에 대한 인터페이스 포인터이다. 인덱스 버퍼는 정점 버퍼(배열)에 대한 인덱스를 가진다.*/
-	ID3D11Buffer *m_pd3dIndexBuffer;
-	//인덱스 버퍼가 포함하는 인덱스의 개수이다. 
-	UINT m_nIndices;
-	//인덱스 버퍼에서 메쉬를 표현하기 위해 사용되는 시작 인덱스이다. 
-	UINT m_nStartIndex;
-	//각 인덱스에 더해질 인덱스이다. 
-	int m_nBaseVertex;
-
-	//정점 데이터를 저장하기 위한 정점 버퍼 인터페이스 포인터를 선언한다.
-	ID3D11Buffer *m_pd3dVertexBuffer;
-
-	/*정점 버퍼의 정점 개수, 정점의 바이트 수, 정점 데이터가 정점 버퍼의 어디에서부터 시작하는 가를 나타내는 변수를 선언한다.*/
-	UINT m_nVertices;
-	UINT m_nStride;
-	UINT m_nOffset;
-
-	//정점 데이터가 어떤 프리미티브를 표현하고 있는 가를 나타내는 멤버 변수를 선언한다.
-	D3D11_PRIMITIVE_TOPOLOGY m_d3dPrimitiveTopology;
-
-	//정점 데이터를 렌더링하는 멤버 함수를 선언한다.
-public:
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
+
+protected:
+	ID3D11Buffer *m_pd3dVertexBuffer;	/* 정점 버퍼 인터페이스 포인터. 정점 데이터 저장용 */
+	UINT m_nVertices;	/* 정점 버퍼의 정점 개수 */
+	UINT m_nStride;	/* 정점의 바이트 크기 */
+	UINT m_nOffset;	/* 정점 데이터가 정점 버퍼의 어디서부터 시작하는가 */
+	D3D11_PRIMITIVE_TOPOLOGY m_d3dPrimitiveTopology;	/* 정점 데이터가 어떤 프리미티브를 표현하고 있는가 */
+
+	ID3D11Buffer *m_pd3dIndexBuffer;	/* 인덱스 버퍼 인터페이스 포인터. 인덱스 버퍼 저장용 */
+	UINT m_nIndices;	/* 인덱스 버퍼의 인덱스 개수 */
+	UINT m_nStartIndex;	/* 인덱스 버퍼에서 사용할 시작 인덱스 */
+	int m_nBaseVertex;	/* 각 인덱스에 더해질 인덱스 */
+
+	ID3D11RasterizerState *m_pd3dRasterizerState;
+
+private:
+	int m_nReferences;
 };
+
+
+
 
 class CTriangleMesh : public CMesh
 {
