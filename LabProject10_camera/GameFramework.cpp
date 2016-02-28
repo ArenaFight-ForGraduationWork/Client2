@@ -36,6 +36,9 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	//Direct3D 디바이스, 디바이스 컨텍스트, 스왑 체인 등을 생성하는 함수를 호출한다. 
 	if (!CreateDirect3DDisplay()) return false;
 
+	// 오브젝트 매니저를 초기화한다
+	m_pObjectManager = CObjectManager::GetSingleton(m_pd3dDevice);
+
 	//렌더링할 객체(게임 월드 객체)를 생성한다. 
 	BuildObjects();
 
@@ -196,6 +199,25 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		case VK_F2:
 			m_OperationMode = MODE_KEYBOARD;
 			break;
+		case VK_F5:
+			if (m_pObjectManager->FindObject(0))
+				m_pObjectManager->DeleteObject(0);
+			else
+				m_pObjectManager->Insert(0, D3DXVECTOR3(-120, 0, 0), D3DXVECTOR3(0, 0, 0));
+			break;
+		case VK_F6:
+			if (m_pObjectManager->FindObject(1))
+				m_pObjectManager->DeleteObject(1);
+			else
+				m_pObjectManager->Insert(1, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0));
+			break;
+		case VK_F7:
+			if (m_pObjectManager->FindObject(2))
+				m_pObjectManager->DeleteObject(2);
+			else
+				m_pObjectManager->Insert(2, D3DXVECTOR3(120, 0, 0), D3DXVECTOR3(0, 0, 0));
+			break;
+
 		case VK_ESCAPE:
 			::PostQuitMessage(0);
 			break;
@@ -358,7 +380,7 @@ void CGameFramework::ProcessInput()
 	}
 
 	if (dwDirection) m_pPlayer->Move(m_pCamera->GetYaw(), dwDirection, m_GameTimer.GetTimeElapsed());
-		
+
 	// 4) 플레이어 위치에 따라 카메라 update
 	m_pCamera->Update(m_pPlayer->GetPosition());
 }

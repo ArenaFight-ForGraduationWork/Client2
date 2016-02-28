@@ -37,14 +37,8 @@ struct LIGHTS
 class CScene
 {
 private:
-	CShader  **m_ppShaders;
-	int m_nShaders;
+	std::vector<CShader*> m_vShaders;
 
-	CObject **m_ppObjects;
-	int m_nObjects;
-	// 얘 부분은 없애야 할 것 같어
-
-public:
 public:
 	CScene();
 	~CScene();

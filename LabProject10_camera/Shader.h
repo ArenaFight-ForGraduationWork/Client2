@@ -26,8 +26,12 @@ public:
 	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, CMaterial *pMaterial = nullptr);
 	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, CTexture *pTexture);
 
-	virtual void BuildObjects(ID3D11Device *pd3dDevice);
-	virtual void ReleaseObjects();
+	void InsertObject(CObject *pObject);
+	void ReleaseObject(UINT id);
+	void ReleaseAllObjects();
+
+	//virtual void BuildObjects(ID3D11Device *pd3dDevice);
+	//virtual void ReleaseObjects();
 	virtual void AnimateObjects(float fTimeElapsed);
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 
@@ -65,8 +69,8 @@ public:
 	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, D3DXMATRIX *pd3dxmtxWorld = nullptr);
 	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, CMaterial *pMaterial = nullptr);
 
-	virtual void BuildObjects(ID3D11Device *pd3dDevice);
-	virtual void ReleaseObjects();
+	//virtual void BuildObjects(ID3D11Device *pd3dDevice);
+	//virtual void ReleaseObjects();
 	virtual void AnimateObjects(float fTimeElapsed);
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 };
@@ -86,8 +90,8 @@ public:
 	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
 	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, D3DXMATRIX *pd3dxmtxWorld = nullptr);
 
-	virtual void BuildObjects(ID3D11Device *pd3dDevice);
-	virtual void ReleaseObjects();
+	//virtual void BuildObjects(ID3D11Device *pd3dDevice);
+	//virtual void ReleaseObjects();
 	virtual void AnimateObjects(float fTimeElapsed);
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 };
@@ -104,7 +108,7 @@ public:
 	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
 	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, D3DXMATRIX *pd3dxmtxWorld = nullptr);
 
-	virtual void ReleaseObjects();
+	//virtual void ReleaseObjects();
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 };
 

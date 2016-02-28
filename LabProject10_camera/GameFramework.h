@@ -4,6 +4,8 @@
 #include "Player.h"
 #include "Scene.h"
 #include "Camera.h"
+#include "ObjectManager.h"
+
 
 #define MODE_MOUSE		0x01
 #define MODE_KEYBOARD	0x02
@@ -44,8 +46,9 @@ private:
 	ID3D11Texture2D *m_pd3dDepthStencilBuffer;
 	ID3D11DepthStencilView *m_pd3dDepthStencilView;
 
-
 	POINT	m_ptOldCursorPos;
+
+	CObjectManager *m_pObjectManager;
 
 public:
 	CGameFramework();

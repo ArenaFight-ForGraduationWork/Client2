@@ -93,6 +93,8 @@ public:
 
 	D3DXMATRIX* GetWorldMatrix() { return m_pd3dxmtxWorld; }
 
+	UINT GetId() { return m_id; }
+
 	virtual void SetMesh(CMesh *pMesh);
 	CMesh* GetMesh() { return m_pMesh; }
 	void SetMaterial(CMaterial *pMaterial);

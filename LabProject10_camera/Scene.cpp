@@ -1,16 +1,11 @@
 #include "stdafx.h"
 #include "Scene.h"
+#include "ResourceManager.h"
 
 CScene::CScene()
 {
-	m_nShaders = 0;
-	m_ppShaders = NULL;
-
-	m_ppObjects = NULL;
-	m_nObjects = 0;
-
-	m_pLights = NULL;
-	m_pd3dcbLights = NULL;
+	m_pLights = nullptr;
+	m_pd3dcbLights = nullptr;
 }
 
 CScene::~CScene()
@@ -19,40 +14,21 @@ CScene::~CScene()
 
 void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 {
-	//m_nShaders = 2;
-	//m_ppShaders = new CShader*[m_nShaders];
-
-	//m_ppShaders[0] = new CTexturedShader();
-	//m_ppShaders[0]->CreateShader(pd3dDevice);
-	//m_ppShaders[0]->BuildObjects(pd3dDevice);
-	//m_ppShaders[1] = new CIlluminatedTexturedShader();
-	//m_ppShaders[1]->CreateShader(pd3dDevice);
-	//m_ppShaders[1]->BuildObjects(pd3dDevice);
-	m_nShaders = 1;
-	m_ppShaders = new CShader*[m_nShaders];
-
-	m_ppShaders[0] = new CIlluminatedTexturedShader();
-	m_ppShaders[0]->CreateShader(pd3dDevice);
-	m_ppShaders[0]->BuildObjects(pd3dDevice);
+	CResourceManager *pResourceManager = CResourceManager::GetSingleton(pd3dDevice);
+	m_vShaders.push_back(pResourceManager->GetShaderByShaderType(CResourceManager::ShaderType::IlluminatedTextured));
 
 	BuildLights(pd3dDevice);
 }
 
 void CScene::ReleaseObjects()
 {
-	// 쉐이더 객체 리스트의 각 객체를 소멸시키고 리스트를 소멸시킨다
-	if (m_ppShaders)
-	{
-		for (int i = 0; i < m_nShaders; ++i) m_ppShaders[i]->ReleaseObjects();
-		delete[] m_ppShaders;
-	}
-
-	//게임 객체 리스트의 각 객체를 반환(Release)하고 리스트를 소멸시킨다.
-	if (m_ppObjects)
-	{
-		//for (int j = 0; j < m_nObjects; j++) m_ppObjects[j]->Release();
-		delete[] m_ppObjects;
-	}
+	//// 쉐이더 객체 리스트의 각 객체를 소멸시키고 리스트를 소멸시킨다
+	//if (m_ppShaders)
+	//{
+	//	//for (int i = 0; i < m_nShaders; ++i) m_ppShaders[i]->ReleaseObjects();
+	//	delete[] m_ppShaders;
+	//}
+	m_vShaders.clear();
 }
 
 bool CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
@@ -72,9 +48,13 @@ bool CScene::ProcessInput()
 
 void CScene::AnimateObjects(float fTimeElapsed)
 {
-	for (int i = 0; i < m_nShaders; i++)
+	//for (int i = 0; i < m_nShaders; i++)
+	//{
+	//	m_ppShaders[i]->AnimateObjects(fTimeElapsed);
+	//}
+	for (auto shader : m_vShaders)
 	{
-		m_ppShaders[i]->AnimateObjects(fTimeElapsed);
+		shader->AnimateObjects(fTimeElapsed);
 	}
 }
 
@@ -94,10 +74,10 @@ void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext)
 		UpdateLights(pd3dDeviceContext);
 	//}
 
-	for (int i = 0; i < m_nShaders; i++)
-	{
-		m_ppShaders[i]->Render(pd3dDeviceContext);
-	}
+		for (auto shader : m_vShaders)
+		{
+			shader->Render(pd3dDeviceContext);
+		}
 }
 
 void CScene::BuildLights(ID3D11Device *pd3dDevice)
