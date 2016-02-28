@@ -6,15 +6,12 @@
 
 CShader::CShader()
 {
-	m_pd3dVertexShader = NULL;
-	m_pd3dPixelShader = NULL;
-	m_pd3dVertexLayout = NULL;
+	m_pd3dVertexShader = nullptr;
+	m_pd3dPixelShader = nullptr;
+	m_pd3dVertexLayout = nullptr;
 
-	m_pd3dcbWorldMatrix = NULL;
-	m_pd3dcbMaterial = NULL;
-
-	m_ppObjects = NULL;
-	m_nObjects = 0;
+	m_pd3dcbWorldMatrix = nullptr;
+	m_pd3dcbMaterial = nullptr;
 }
 
 CShader::~CShader()
@@ -33,19 +30,17 @@ void CShader::ReleaseObjects()
 	if (m_pd3dcbWorldMatrix) m_pd3dcbWorldMatrix->Release();
 	if (m_pd3dcbMaterial) m_pd3dcbMaterial->Release();
 
-	if (m_ppObjects)
-	{
-		for (int j = 0; j < m_nObjects; j++) delete m_ppObjects[j];
-		delete[] m_ppObjects;
-	}
+	//if (m_ppObjects)
+	//{
+	//	for (int j = 0; j < m_nObjects; j++) delete m_ppObjects[j];
+	//	delete[] m_ppObjects;
+	//}
 }
 
 void CShader::AnimateObjects(float fTimeElapsed)
 {
-	for (int j = 0; j < m_nObjects; j++)
-	{
-		m_ppObjects[j]->Animate(fTimeElapsed);
-	}
+	for (auto obj : m_vObjects)
+		obj->Animate(fTimeElapsed);
 }
 
 void CShader::CreateVertexShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11VertexShader **ppd3dVertexShader, D3D11_INPUT_ELEMENT_DESC *pd3dInputLayout, UINT nElements, ID3D11InputLayout **ppd3dVertexLayout)
@@ -131,15 +126,19 @@ void CShader::Render(ID3D11DeviceContext *pd3dDeviceContext)
 	//픽셀-쉐이더를 디바이스 컨텍스트에 연결(설정)한다. 
 	if (m_pd3dPixelShader) pd3dDeviceContext->PSSetShader(m_pd3dPixelShader, NULL, 0);
 
-	for (int i = 0; i < m_nObjects; ++i)
+	for (auto obj : m_vObjects)
 	{
-		UpdateShaderVariables(pd3dDeviceContext, m_ppObjects[i]->GetWorldMatrix());
-		if (m_ppObjects[i]->GetMaterial())		UpdateShaderVariables(pd3dDeviceContext, m_ppObjects[i]->GetMaterial());
-		if (m_ppObjects[i]->GetTexture()) 		UpdateShaderVariables(pd3dDeviceContext, m_ppObjects[i]->GetTexture());
-		m_ppObjects[i]->Render(pd3dDeviceContext);
+		UpdateShaderVariables(pd3dDeviceContext, obj->GetWorldMatrix());
+		if (obj->GetMaterial())
+			UpdateShaderVariables(pd3dDeviceContext, obj->GetMaterial());
+		if (obj->GetTexture())
+			UpdateShaderVariables(pd3dDeviceContext, obj->GetTexture());
+		obj->Render(pd3dDeviceContext);
 	}
 
 }
+
+
 
 
 
@@ -192,6 +191,8 @@ void CDiffusedShader::Render(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	CShader::Render(pd3dDeviceContext);
 }
+
+
 
 
 
@@ -335,8 +336,6 @@ void CIlluminatedTexturedShader::BuildObjects(ID3D11Device *pd3dDevice)
 	CMesh *pMeshIlluminatedTextured = new CCubeMeshIlluminatedTextured(pd3dDevice, 12.0f, 12.0f, 12.0f);
 
 	int xObjects = 3, yObjects = 3, zObjects = 3, i = 0, nObjectTypes = 2;
-	m_nObjects = ((xObjects * 2) + 1) * ((yObjects * 2) + 1) * ((zObjects * 2) + 1);
-	m_ppObjects = new CObject*[m_nObjects];
 
 	float fxPitch = 12.0f * 1.7f;
 	float fyPitch = 12.0f * 1.7f;
@@ -355,7 +354,8 @@ void CIlluminatedTexturedShader::BuildObjects(ID3D11Device *pd3dDevice)
 				pRotatingObject->MoveAbsolute((x*(fxPitch*nObjectTypes) + 1 * fxPitch), (y*(fyPitch*nObjectTypes) + 1 * fyPitch), (z*(fzPitch*nObjectTypes) + 1 * fzPitch));
 				pRotatingObject->SetRotationAxis(D3DXVECTOR3(0.0f, 1.0f, 0.0f));
 				pRotatingObject->SetRotationSpeed(10.0f*(i % 10));
-				m_ppObjects[i++] = pRotatingObject;
+				i += 1;
+				m_vObjects.push_back(pRotatingObject);
 			}
 		}
 	}
