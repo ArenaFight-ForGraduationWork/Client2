@@ -1,13 +1,19 @@
-﻿빌드 시작: 2016-02-29 오전 1:09:06
+﻿빌드 시작: 2016-02-29 오전 1:14:28
      1>2 노드의 "D:\ArenaFight\Client2\LabProject10_camera\LabProject09.vcxproj" 프로젝트(Build 대상)입니다.
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\GameClient.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Camera.cpp GameClient.cpp GameFramework.cpp Player.cpp Scene.cpp Shader.cpp
-         Shader.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\GameClient.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Camera.cpp GameClient.cpp GameFramework.cpp Mesh.cpp Object.cpp Player.cpp Scene.cpp Shader.cpp
+         Mesh.cpp
          코드를 생성하고 있습니다...
          컴파일하고 있습니다...
+         Shader.cpp
          Scene.cpp
          Player.cpp
      1>d:\arenafight\client2\labproject10_camera\player.cpp(41): warning C4244: '=' : 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         Object.cpp
+     1>d:\arenafight\client2\labproject10_camera\object.cpp(222): warning C4172: 지역 변수 또는 임시 변수의 주소를 반환하고 있습니다.
+     1>d:\arenafight\client2\labproject10_camera\object.cpp(229): warning C4172: 지역 변수 또는 임시 변수의 주소를 반환하고 있습니다.
+     1>d:\arenafight\client2\labproject10_camera\object.cpp(236): warning C4172: 지역 변수 또는 임시 변수의 주소를 반환하고 있습니다.
+     1>d:\arenafight\client2\labproject10_camera\object.cpp(264): warning C4172: 지역 변수 또는 임시 변수의 주소를 반환하고 있습니다.
          GameFramework.cpp
          GameClient.cpp
      1>d:\arenafight\client2\labproject10_camera\gameclient.cpp(143): warning C4101: 'ps' :참조되지 않은 지역 변수입니다.
@@ -36,4 +42,4 @@
 
 빌드했습니다.
 
-경과 시간: 00:00:00.57
+경과 시간: 00:00:00.55

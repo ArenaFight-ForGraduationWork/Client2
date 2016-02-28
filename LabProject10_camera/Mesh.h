@@ -44,16 +44,6 @@ private:
 
 
 
-class CCubeMesh : public CMesh
-{
-public:
-	//직육면체의 가로, 세로, 높이의 크기를 지정하여 직육면체 메쉬를 생성한다.
-	CCubeMesh(ID3D11Device *pd3dDevice, float fWidth = 2.0f, float fHeight = 2.0f, float fDepth = 2.0f);
-	virtual ~CCubeMesh();
-
-	virtual void CreateRasterizerState(ID3D11Device *pd3dDevice);
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
-};
 
 // 이 클래스는 조명의 영향을 받는 메쉬의 베이스 클래스이다.
 class CMeshIlluminated : public CMesh
@@ -82,16 +72,7 @@ public:
 	virtual void SetRasterizerState(ID3D11Device *pd3dDevice);
 	virtual void Render(ID3D11DeviceContext *pd3dImmediateDeviceContext);
 };
-// 이 클래스는 조명을 사용하는 구 메쉬 클래스이다.
-class CSphereMeshIlluminated : public CMeshIlluminated
-{
-public:
-	CSphereMeshIlluminated(ID3D11Device *pd3dDevice, float fRadius = 2.0f, int nSlices = 20, int nStacks = 20);
-	virtual ~CSphereMeshIlluminated();
 
-	virtual void SetRasterizerState(ID3D11Device *pd3dDevice);
-	virtual void Render(ID3D11DeviceContext *pd3dImmediateDeviceContext);
-};
 
 
 class CAirplaneMesh : public CMesh
@@ -106,15 +87,7 @@ public:
 
 
 
-class CTexturedCubeMesh : public CMesh
-{
-public:
-	CTexturedCubeMesh(ID3D11Device *pd3dDevice, float fWidth, float fHeight, float fDepth);
-	virtual ~CTexturedCubeMesh();
 
-	virtual void SetRasterizerState(ID3D11Device *pd3dDevice);
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
-};
 
 class CCubeMeshIlluminatedTextured : public CMeshIlluminated
 {
