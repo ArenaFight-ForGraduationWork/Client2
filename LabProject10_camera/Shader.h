@@ -31,6 +31,9 @@ public:
 	virtual void AnimateObjects(float fTimeElapsed);
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 
+protected:
+	std::vector<CObject*> m_vObjects;
+
 	ID3D11VertexShader *m_pd3dVertexShader;
 	ID3D11InputLayout *m_pd3dVertexLayout;
 
@@ -41,31 +44,11 @@ public:
 	ID3D11Buffer *m_pd3dcbWorldMatrix;
 	ID3D11Buffer *m_pd3dcbMaterial;
 
-protected:
-	std::vector<CObject*> m_vObjects;
-
 	void CreateVertexShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11VertexShader **ppd3dVertexShader, D3D11_INPUT_ELEMENT_DESC *pd3dInputLayout, UINT nElements, ID3D11InputLayout **ppd3dVertexLayout);
 	void CreatePixelShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11PixelShader **ppd3dPixelShader);
 	void CreateGeometryShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11GeometryShader **ppd3dGeometryShader);
 };
 
-
-// 조명을 사용하지 않고 렌더링하기 위한 CDiffusedShader 클래스
-class CDiffusedShader : public CShader
-{
-public:
-	CDiffusedShader();
-	~CDiffusedShader();
-
-	virtual void CreateShader(ID3D11Device *pd3dDevice);
-	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
-	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, D3DXMATRIX *pd3dxmtxWorld = nullptr);
-
-	virtual void BuildObjects(ID3D11Device *pd3dDevice);
-	virtual void ReleaseObjects();
-	virtual void AnimateObjects(float fTimeElapsed);
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
-};
 
 
 
@@ -89,6 +72,25 @@ public:
 };
 
 
+
+
+
+// 조명을 사용하지 않고 렌더링하기 위한 CDiffusedShader 클래스
+class CDiffusedShader : public CShader
+{
+public:
+	CDiffusedShader();
+	~CDiffusedShader();
+
+	virtual void CreateShader(ID3D11Device *pd3dDevice);
+	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
+	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, D3DXMATRIX *pd3dxmtxWorld = nullptr);
+
+	virtual void BuildObjects(ID3D11Device *pd3dDevice);
+	virtual void ReleaseObjects();
+	virtual void AnimateObjects(float fTimeElapsed);
+	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
+};
 
 
 
