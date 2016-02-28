@@ -269,7 +269,7 @@ void CGameFramework::BuildObjects()
 	m_pPlayer = new CPlayer();
 	{
 		CMesh *pMesh = new CAirplaneMesh(m_pd3dDevice, 20.0f, 20.0f, 4.0f, D3DCOLOR_XRGB(0, 255, 0));
-		CObject *pObject = new CObject();
+		CObject *pObject = new CObject(UINT(1010));
 		pObject->SetMesh(pMesh);
 		pObject->MoveAbsolute(0, 0, 0);
 		m_pPlayer->SetObject(pObject);

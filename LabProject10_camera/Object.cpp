@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Object.h"
 
+
+
 CMaterial::CMaterial()
 {
 	m_nReferences = 0;
@@ -73,7 +75,7 @@ void CTexture::SetTexture(int nIndex, ID3D11ShaderResourceView *pd3dsrvTexture, 
 
 
 
-CObject::CObject()
+CObject::CObject(UINT id)
 {
 	m_pd3dxmtxWorld = new D3DXMATRIX();
 	D3DXMatrixIdentity(m_pd3dxmtxWorld);
@@ -81,6 +83,8 @@ CObject::CObject()
 	m_pMesh = nullptr;
 	m_pMaterial = nullptr;
 	m_pTexture = nullptr;
+
+	m_id = id;
 }
 
 CObject::~CObject()
@@ -266,11 +270,9 @@ const D3DXMATRIX* CObject::_GetRotationMatrix()
 
 
 
-CRotatingObject::CRotatingObject()
+CRotatingObject::CRotatingObject(UINT id) : CObject(id)
 {
 	m_fRotationSpeed = 15.0f;
-
-	temp = 0.0f;
 }
 
 CRotatingObject::~CRotatingObject()

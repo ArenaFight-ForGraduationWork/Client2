@@ -68,7 +68,7 @@ private:
 class CObject
 {
 public:
-	CObject();
+	CObject(UINT id);
 	virtual ~CObject();
 
 	void MoveRelative(const float fx, const float fy, const float fz);
@@ -110,13 +110,15 @@ private:
 	CMaterial *m_pMaterial;
 	CTexture *m_pTexture;
 
+	UINT m_id;
+
 	const D3DXMATRIX* _GetRotationMatrix();
 };
 
 class CRotatingObject : public CObject
 {
 public:
-	CRotatingObject();
+	CRotatingObject(UINT id);
 	virtual ~CRotatingObject();
 
 	virtual void Animate(float fTimeElapsed);
@@ -130,8 +132,6 @@ private:
 	//자전 속도와 회전축 벡터를 나타내는 멤버 변수를 선언한다.
 	float m_fRotationSpeed;
 	D3DXVECTOR3 m_d3dxvRotationAxis;
-
-	float temp;
 };
 
 

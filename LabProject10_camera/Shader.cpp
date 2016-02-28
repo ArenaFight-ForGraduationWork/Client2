@@ -303,7 +303,7 @@ void CIlluminatedTexturedShader::BuildObjects(ID3D11Device *pd3dDevice)
 		{
 			for (int z = -zObjects; z <= zObjects; z++)
 			{
-				pRotatingObject = new CRotatingObject();
+				pRotatingObject = new CRotatingObject(i);
 				pRotatingObject->SetMesh(pMeshIlluminatedTextured);
 				pRotatingObject->SetMaterial(ppMaterials[i % 3]);
 				pRotatingObject->SetTexture(ppTextures[i % 3]);
