@@ -268,24 +268,3 @@ const D3DXMATRIX* CObject::_GetRotationMatrix()
 	return &mtxRotate;
 }
 
-
-
-CRotatingObject::CRotatingObject(UINT id) : CObject(id)
-{
-	m_fRotationSpeed = 15.0f;
-}
-
-CRotatingObject::~CRotatingObject()
-{
-}
-
-void CRotatingObject::Animate(float fTimeElapsed)
-{
-	CObject::RotateRelative(&m_d3dxvRotationAxis, m_fRotationSpeed * fTimeElapsed);
-}
-
-void CRotatingObject::Render(ID3D11DeviceContext *pd3dDeviceContext)
-{
-	CObject::Render(pd3dDeviceContext);
-}
-

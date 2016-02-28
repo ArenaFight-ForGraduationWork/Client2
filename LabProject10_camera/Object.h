@@ -115,24 +115,8 @@ private:
 	const D3DXMATRIX* _GetRotationMatrix();
 };
 
-class CRotatingObject : public CObject
-{
-public:
-	CRotatingObject(UINT id);
-	virtual ~CRotatingObject();
 
-	virtual void Animate(float fTimeElapsed);
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 
-	//자전 속도와 회전축 벡터를 설정하는 함수이다.
-	void SetRotationSpeed(float fRotationSpeed) { m_fRotationSpeed = fRotationSpeed; }
-	void SetRotationAxis(D3DXVECTOR3 d3dxvRotationAxis) { m_d3dxvRotationAxis = d3dxvRotationAxis; }
-
-private:
-	//자전 속도와 회전축 벡터를 나타내는 멤버 변수를 선언한다.
-	float m_fRotationSpeed;
-	D3DXVECTOR3 m_d3dxvRotationAxis;
-};
 
 
 #endif

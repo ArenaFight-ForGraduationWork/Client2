@@ -296,22 +296,20 @@ void CIlluminatedTexturedShader::BuildObjects(ID3D11Device *pd3dDevice)
 	float fxPitch = 12.0f * 1.7f;
 	float fyPitch = 12.0f * 1.7f;
 	float fzPitch = 12.0f * 1.7f;
-	CRotatingObject *pRotatingObject = NULL;
+	CObject *pObject = nullptr;
 	for (int x = -xObjects; x <= xObjects; x++)
 	{
 		for (int y = -yObjects; y <= yObjects; y++)
 		{
 			for (int z = -zObjects; z <= zObjects; z++)
 			{
-				pRotatingObject = new CRotatingObject(i);
-				pRotatingObject->SetMesh(pMeshIlluminatedTextured);
-				pRotatingObject->SetMaterial(ppMaterials[i % 3]);
-				pRotatingObject->SetTexture(ppTextures[i % 3]);
-				pRotatingObject->MoveAbsolute((x*(fxPitch*nObjectTypes) + 1 * fxPitch), (y*(fyPitch*nObjectTypes) + 1 * fyPitch), (z*(fzPitch*nObjectTypes) + 1 * fzPitch));
-				pRotatingObject->SetRotationAxis(D3DXVECTOR3(0.0f, 1.0f, 0.0f));
-				pRotatingObject->SetRotationSpeed(10.0f*(i % 10));
+				pObject = new CObject(i);
+				pObject->SetMesh(pMeshIlluminatedTextured);
+				pObject->SetMaterial(ppMaterials[i % 3]);
+				pObject->SetTexture(ppTextures[i % 3]);
+				pObject->MoveAbsolute((x*(fxPitch*nObjectTypes) + 1 * fxPitch), (y*(fyPitch*nObjectTypes) + 1 * fyPitch), (z*(fzPitch*nObjectTypes) + 1 * fzPitch));
 				i += 1;
-				m_vObjects.push_back(pRotatingObject);
+				m_vObjects.push_back(pObject);
 			}
 		}
 	}
