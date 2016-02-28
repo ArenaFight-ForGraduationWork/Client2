@@ -44,37 +44,6 @@ private:
 
 
 
-
-// 이 클래스는 조명의 영향을 받는 메쉬의 베이스 클래스이다.
-class CMeshIlluminated : public CMesh
-{
-public:
-	CMeshIlluminated(ID3D11Device *pd3dDevice);
-	virtual ~CMeshIlluminated();
-
-public:
-	//정점이 포함된 삼각형의 법선벡터를 계산하는 함수이다.
-	D3DXVECTOR3 CalculateTriAngleNormal(BYTE *pVertices, USHORT nIndex0, USHORT nIndex1, USHORT nIndex2);
-	void SetTriAngleListVertexNormal(BYTE *pVertices);
-	//정점의 법선벡터의 평균을 계산하는 함수이다.
-	void SetAverageVertexNormal(BYTE *pVertices, WORD *pIndices, int nPrimitives, int nOffset, bool bStrip);
-	void CalculateVertexNormal(BYTE *pVertices, WORD *pIndices);
-
-	virtual void Render(ID3D11DeviceContext *pd3dImmediateDeviceContext);
-};
-// 이 클래스는 조명을 사용하는 직육면체 메쉬 클래스이다.
-class CCubeMeshIlluminated : public CMeshIlluminated
-{
-public:
-	CCubeMeshIlluminated(ID3D11Device *pd3dDevice, float fWidth = 2.0f, float fHeight = 2.0f, float fDepth = 2.0f);
-	virtual ~CCubeMeshIlluminated();
-
-	virtual void SetRasterizerState(ID3D11Device *pd3dDevice);
-	virtual void Render(ID3D11DeviceContext *pd3dImmediateDeviceContext);
-};
-
-
-
 class CAirplaneMesh : public CMesh
 {
 public:
@@ -89,7 +58,7 @@ public:
 
 
 
-class CCubeMeshIlluminatedTextured : public CMeshIlluminated
+class CCubeMeshIlluminatedTextured : public CMesh
 {
 public:
 	CCubeMeshIlluminatedTextured(ID3D11Device *pd3dDevice, float fWidth = 2.0f, float fHeight = 2.0f, float fDepth = 2.0f);
@@ -97,6 +66,14 @@ public:
 
 	virtual void SetRasterizerState(ID3D11Device *pd3dDevice);
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
+
+private:
+	/* 정점의 법선 벡터 계산. 정점 데이터와 인덱스 데이터 사용 */
+	void CalculateVertexNormal(BYTE *pVertices, WORD *pIndices);
+
+	void SetTriAngleListVertexNormal(BYTE *pVertices);	/* 정점의 법선 벡터 계산. 인덱스 버퍼를 쓰지 않는 삼각형 리스트용 */
+	void SetAverageVertexNormal(BYTE *pVertices, WORD *pIndices, int nPrimitives, int nOffset, bool bStrip);	/* 정점의 법선벡터의 평균 계산. 인덱스 버퍼를 사용할 경우 */
+	D3DXVECTOR3 CalculateTriAngleNormal(BYTE *pVertices, USHORT nIndex0, USHORT nIndex1, USHORT nIndex2);	/* 삼각형의 법선 벡터 계산. 삼각형의 세 정점을 사용 */
 };
 
 
