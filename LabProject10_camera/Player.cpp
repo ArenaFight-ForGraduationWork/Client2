@@ -27,39 +27,20 @@ void CPlayer::ReleaseObject()
 void CPlayer::Move(const float cameraYaw, const DWORD dwDirection, const float fTimeElapsed)
 {
 	// 1) 카메라가 바라보는 방향 + 입력받은 방향 = fYaw를 Yaw값으로 회전
-	float fYaw = cameraYaw;
-	short sX = 0, sZ = 0;
+	D3DXVECTOR3 defaultAngle = D3DXVECTOR3(0, 0, 1);
+	D3DXVECTOR3 inputAngle = D3DXVECTOR3(0, 0, 0);
 	if (dwDirection)
 	{
-		if (dwDirection & DIR_FORWARD) sZ += 1;
-		if (dwDirection & DIR_BACKWARD)	sZ -= 1;
-		if (dwDirection & DIR_LEFT)	sX -= 1;
-		if (dwDirection & DIR_RIGHT) sX += 1;
+		if (dwDirection & DIR_FORWARD) inputAngle.z += 1;
+		if (dwDirection & DIR_BACKWARD)	inputAngle.z -= 1;
+		if (dwDirection & DIR_LEFT)	inputAngle.x += 1;
+		if (dwDirection & DIR_RIGHT) inputAngle.x -= 1;
 	}
-	if (0 == (sX * sZ))
-	{
-		if (0 == sX)
-		{
-			if (1 == sZ) fYaw += 0;
-			else if (-1 == sZ) fYaw += 180;
-		}
-		else
-		{
-			if (1 == sX) fYaw += 90;
-			else if (-1 == sX) fYaw += 270;
-		}
-	}
-	else
-	{	// !0
-		if ((1 == sX) && (1 == sZ)) fYaw += 45;
-		else if ((1 == sX) && (-1 == sZ)) fYaw += 135;
-		else if ((-1 == sX) && (-1 == sZ)) fYaw += 225;
-		else if ((-1 == sX) && (1 == sZ)) fYaw += 315;
-	}
-	if (fYaw < 0) fYaw += 360;
-	else if (fYaw > 359) fYaw -= 360;
+	float fAngle = acosf(D3DXVec3Dot(&defaultAngle, &inputAngle) / (D3DXVec3Length(&defaultAngle) * D3DXVec3Length(&inputAngle)));
+	fAngle = D3DXToDegree(fAngle);
+	fAngle = ((defaultAngle.x* inputAngle.z - defaultAngle.z*inputAngle.x) > 0.0f) ? fAngle : -fAngle;
 
-	m_pObject->RotateAbsolute(&D3DXVECTOR3(0, fYaw, 0));
+	m_pObject->RotateAbsolute(&D3DXVECTOR3(0, cameraYaw + fAngle, 0));
 
 	// 2) 로컬 z축으로 속도 * 시간만큼 이동
 	m_pObject->MoveForward(m_fSpeed * fTimeElapsed);
