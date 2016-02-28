@@ -36,6 +36,7 @@ void CPlayer::Move(const float cameraYaw, const DWORD dwDirection, const float f
 		if (dwDirection & DIR_LEFT)	inputAngle.x += 1;
 		if (dwDirection & DIR_RIGHT) inputAngle.x -= 1;
 	}
+	if (D3DXVECTOR3(0, 0, 0) == inputAngle) return;	// inputAngle==(0,0,0)이면 어느 방향으로든 움직이지 않는다 => 함수 종료
 	float fAngle = acosf(D3DXVec3Dot(&defaultAngle, &inputAngle) / (D3DXVec3Length(&defaultAngle) * D3DXVec3Length(&inputAngle)));
 	fAngle = D3DXToDegree(fAngle);
 	fAngle = ((defaultAngle.x* inputAngle.z - defaultAngle.z*inputAngle.x) > 0.0f) ? fAngle : -fAngle;
