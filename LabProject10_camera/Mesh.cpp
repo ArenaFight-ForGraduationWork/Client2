@@ -229,11 +229,11 @@ void CMeshIlluminated::SetTriAngleListVertexNormal(BYTE *pVertices)
 	{
 		d3dxvNormal = CalculateTriAngleNormal(pVertices, (i * 3 + 0), (i * 3 + 1), (i * 3 + 2));
 		pVertex = (CNormalVertex *)(pVertices + ((i * 3 + 0) * m_nStride));
-		pVertex->m_d3dxvNormal = d3dxvNormal;
+		pVertex->SetNormal(d3dxvNormal);
 		pVertex = (CNormalVertex *)(pVertices + ((i * 3 + 1) * m_nStride));
-		pVertex->m_d3dxvNormal = d3dxvNormal;
+		pVertex->SetNormal(d3dxvNormal);
 		pVertex = (CNormalVertex *)(pVertices + ((i * 3 + 2) * m_nStride));
-		pVertex->m_d3dxvNormal = d3dxvNormal;
+		pVertex->SetNormal(d3dxvNormal);
 	}
 }
 //삼각형의 세 정점을 사용하여 삼각형의 법선 벡터를 계산한다.
@@ -271,7 +271,7 @@ void CMeshIlluminated::SetAverageVertexNormal(BYTE *pVertices, WORD *pIndices, i
 		}
 		D3DXVec3Normalize(&d3dxvSumOfNormal, &d3dxvSumOfNormal);
 		pVertex = (CNormalVertex *)(pVertices + (j * m_nStride));
-		pVertex->m_d3dxvNormal = d3dxvSumOfNormal;
+		pVertex->SetNormal(d3dxvSumOfNormal);
 	}
 }
 

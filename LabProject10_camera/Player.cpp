@@ -26,7 +26,7 @@ void CPlayer::ReleaseObject()
 
 void CPlayer::Move(const float cameraYaw, const DWORD dwDirection, const float fTimeElapsed)
 {
-	// 1) 카메라가 바라보는 방향 + 입력받은 방향 = fYaw를 Yaw값으로 회전
+	// 1) 카메라가 바라보는 방향 + 입력받은 방향 = fAngle를 Yaw값으로 회전
 	D3DXVECTOR3 defaultAngle = D3DXVECTOR3(0, 0, 1);
 	D3DXVECTOR3 inputAngle = D3DXVECTOR3(0, 0, 0);
 	if (dwDirection)
