@@ -40,6 +40,8 @@
 #include <D3D9Types.h>
 
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
+#include <vector>
+#include <map>
 
 #define VS_SLOT_VIEWPROJECTION_MATRIX	0x00
 #define VS_SLOT_WORLD_MATRIX			0x01		// 상수 버퍼를 연결할 슬롯 번호

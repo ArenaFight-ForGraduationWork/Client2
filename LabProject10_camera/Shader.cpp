@@ -175,32 +175,6 @@ void CDiffusedShader::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceConte
 
 void CDiffusedShader::BuildObjects(ID3D11Device *pd3dDevice)
 {
-	CCubeMesh *pCubeMesh = new CCubeMesh(pd3dDevice, 12.0f, 12.0f, 12.0f);	// D3DCOLOR_XRGB(0, 0, 128)
-
-	int xObjects = 6, yObjects = 6, zObjects = 6, i = 0;
-	m_nObjects = (xObjects + ((xObjects % 2) ? 0 : 1)) * (yObjects + ((yObjects % 2) ? 0 : 1)) * (zObjects + ((zObjects % 2) ? 0 : 1));
-	m_ppObjects = new CObject*[m_nObjects];
-
-	float fxPitch = 12.0f * 1.7f;
-	float fyPitch = 12.0f * 1.7f;
-	float fzPitch = 12.0f * 1.7f;
-	CRotatingObject *pRotatingObject = NULL;
-	for (int x = -xObjects; x <= xObjects; x += 2)
-	{
-		for (int y = -yObjects; y <= yObjects; y += 2)
-		{
-			for (int z = -zObjects; z <= zObjects; z += 2)
-			{
-				pRotatingObject = new CRotatingObject();
-				pRotatingObject->SetMesh(pCubeMesh);
-				pRotatingObject->MoveAbsolute(fxPitch*x, fyPitch*y, fzPitch*z);
-				pRotatingObject->SetRotationAxis(D3DXVECTOR3(0.0f, 1.0f, 0.0f));
-				pRotatingObject->SetRotationSpeed(10.0f*(i % 10));
-				m_ppObjects[i++] = pRotatingObject;
-			}
-		}
-	}
-
 	CreateShaderVariables(pd3dDevice);
 }
 
@@ -286,55 +260,7 @@ void CIlluminatedShader::CreateShader(ID3D11Device *pd3dDevice)
 
 void CIlluminatedShader::BuildObjects(ID3D11Device *pd3dDevice)
 {
-	//객체들의 물질의 색상은 빨강색, 녹색, 파란색이다.
-	CMaterial **ppMaterials = new CMaterial*[3];
-	ppMaterials[0] = new CMaterial();
-	ppMaterials[0]->GetMaterial()->m_d3dxcDiffuse = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
-	ppMaterials[0]->GetMaterial()->m_d3dxcAmbient = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
-	ppMaterials[0]->GetMaterial()->m_d3dxcSpecular = D3DXCOLOR(1.0f, 1.0f, 1.0f, 5.0f);
-	ppMaterials[0]->GetMaterial()->m_d3dxcEmissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
-	ppMaterials[1] = new CMaterial();
-	ppMaterials[1]->GetMaterial()->m_d3dxcDiffuse = D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f);
-	ppMaterials[1]->GetMaterial()->m_d3dxcAmbient = D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f);
-	ppMaterials[1]->GetMaterial()->m_d3dxcSpecular = D3DXCOLOR(1.0f, 1.0f, 1.0f, 10.0f);
-	ppMaterials[1]->GetMaterial()->m_d3dxcEmissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
-	ppMaterials[2] = new CMaterial();
-	ppMaterials[2]->GetMaterial()->m_d3dxcDiffuse = D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f);
-	ppMaterials[2]->GetMaterial()->m_d3dxcAmbient = D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f);
-	ppMaterials[2]->GetMaterial()->m_d3dxcSpecular = D3DXCOLOR(1.0f, 0.0f, 1.0f, 10.0f);
-	ppMaterials[2]->GetMaterial()->m_d3dxcEmissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
-
-	CCubeMeshIlluminated *pCubeMeshIlluminated = new CCubeMeshIlluminated(pd3dDevice, 12.0f, 12.0f, 12.0f);
-	CSphereMeshIlluminated *pSphereMeshIlluminated = new CSphereMeshIlluminated(pd3dDevice, 12.0f, 40, 40);
-
-	int xObjects = 5, yObjects = 5, zObjects = 5, i = 0;
-	m_nObjects = (xObjects + 1) * (yObjects + 1) * (zObjects + 1);
-	m_ppObjects = new CObject*[m_nObjects];
-
-	float fxPitch = 12.0f * 1.7f;
-	float fyPitch = 12.0f * 1.7f;
-	float fzPitch = 12.0f * 1.7f;
-	CRotatingObject *pRotatingObject = NULL;
-	for (int x = -xObjects; x <= xObjects; x += 2)
-	{
-		for (int y = -yObjects; y <= yObjects; y += 2)
-		{
-			for (int z = -zObjects; z <= zObjects; z += 2)
-			{
-				pRotatingObject = new CRotatingObject();
-				pRotatingObject->SetMesh((i % 2) ? (CMesh *)pCubeMeshIlluminated : (CMesh *)pSphereMeshIlluminated);
-				pRotatingObject->SetMaterial(ppMaterials[i % 3]);
-				pRotatingObject->MoveAbsolute(fxPitch*x, fyPitch*y, fzPitch*z);
-				pRotatingObject->SetRotationAxis(D3DXVECTOR3(0.0f, 1.0f, 0.0f));
-				pRotatingObject->SetRotationSpeed(10.0f*(i % 10));
-				m_ppObjects[i++] = pRotatingObject;
-			}
-		}
-	}
-
 	CreateShaderVariables(pd3dDevice);
-
-	delete[] ppMaterials;
 }
 
 
