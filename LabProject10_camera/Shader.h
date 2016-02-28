@@ -67,12 +67,15 @@ public:
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 };
 
-// 조명을 사용하여 렌더링하기 위한 CIlluminatedShader 클래스
-class CIlluminatedShader : public CShader
+
+
+
+// 텍스쳐 맵핑과 조명을 사용하여 렌더링하기 위한 CIlluminatedTexturedShader 클래스
+class CIlluminatedTexturedShader : public CShader
 {
 public:
-	CIlluminatedShader();
-	~CIlluminatedShader();
+	CIlluminatedTexturedShader();
+	~CIlluminatedTexturedShader();
 
 	virtual void CreateShader(ID3D11Device *pd3dDevice);
 	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
@@ -83,17 +86,6 @@ public:
 	virtual void ReleaseObjects();
 	virtual void AnimateObjects(float fTimeElapsed);
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
-};
-
-// 텍스쳐 맵핑과 조명을 사용하여 렌더링하기 위한 CIlluminatedTexturedShader 클래스
-class CIlluminatedTexturedShader : public CIlluminatedShader
-{
-public:
-	CIlluminatedTexturedShader();
-	~CIlluminatedTexturedShader();
-
-	virtual void CreateShader(ID3D11Device *pd3dDevice);
-	virtual void BuildObjects(ID3D11Device *pd3dDevice);
 };
 
 
