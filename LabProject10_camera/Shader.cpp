@@ -112,7 +112,7 @@ void CShader::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, D3DX
 	pd3dDeviceContext->Unmap(m_pd3dcbWorldMatrix, 0);
 	pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_WORLD_MATRIX, 1, &m_pd3dcbWorldMatrix);
 }
-void CShader::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, MATERIAL *pMaterial)
+void CShader::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, CMaterial *pMaterial)
 {
 }
 void CShader::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, CTexture *pTexture)
@@ -131,13 +131,12 @@ void CShader::Render(ID3D11DeviceContext *pd3dDeviceContext)
 	//픽셀-쉐이더를 디바이스 컨텍스트에 연결(설정)한다. 
 	if (m_pd3dPixelShader) pd3dDeviceContext->PSSetShader(m_pd3dPixelShader, NULL, 0);
 
-	for (int j = 0; j < m_nObjects; j++)
+	for (int i = 0; i < m_nObjects; ++i)
 	{
-		// 여기
-		UpdateShaderVariables(pd3dDeviceContext, m_ppObjects[j]->GetWorldMatrix());
-		if (m_ppObjects[j]->GetMaterial())		UpdateShaderVariables(pd3dDeviceContext, m_ppObjects[j]->GetMaterial()->GetMaterial());
-		if (m_ppObjects[j]->GetTexture()) 		UpdateShaderVariables(pd3dDeviceContext, m_ppObjects[j]->GetTexture());
-		m_ppObjects[j]->Render(pd3dDeviceContext);
+		UpdateShaderVariables(pd3dDeviceContext, m_ppObjects[i]->GetWorldMatrix());
+		if (m_ppObjects[i]->GetMaterial())		UpdateShaderVariables(pd3dDeviceContext, m_ppObjects[i]->GetMaterial());
+		if (m_ppObjects[i]->GetTexture()) 		UpdateShaderVariables(pd3dDeviceContext, m_ppObjects[i]->GetTexture());
+		m_ppObjects[i]->Render(pd3dDeviceContext);
 	}
 
 }
@@ -248,12 +247,12 @@ void CIlluminatedShader::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceCo
 	CShader::UpdateShaderVariables(pd3dDeviceContext, pd3dxmtxWorld);
 }
 
-void CIlluminatedShader::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, MATERIAL *pMaterial)
+void CIlluminatedShader::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, CMaterial *pMaterial)
 {
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
 	pd3dDeviceContext->Map(m_pd3dcbMaterial, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	MATERIAL *pcbMaterial = (MATERIAL *)d3dMappedResource.pData;
-	memcpy(pcbMaterial, pMaterial, sizeof(MATERIAL));
+	memcpy(pcbMaterial, pMaterial->GetMaterial(), sizeof(MATERIAL));
 	pd3dDeviceContext->Unmap(m_pd3dcbMaterial, 0);
 	pd3dDeviceContext->PSSetConstantBuffers(PS_SLOT_MATERIAL, 1, &m_pd3dcbMaterial);
 }
@@ -338,87 +337,6 @@ void CIlluminatedShader::BuildObjects(ID3D11Device *pd3dDevice)
 	delete[] ppMaterials;
 }
 
-CTexturedShader::CTexturedShader()
-{
-}
-
-CTexturedShader::~CTexturedShader()
-{
-}
-
-void CTexturedShader::CreateShader(ID3D11Device *pd3dDevice)
-{
-	CShader::CreateShader(pd3dDevice);
-
-	D3D11_INPUT_ELEMENT_DESC d3dInputLayout[] =
-	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-	};
-	UINT nElements = ARRAYSIZE(d3dInputLayout);
-	CreateVertexShaderFromFile(pd3dDevice, L"Effect.fx", "VSTexturedColor", "vs_4_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
-	CreatePixelShaderFromFile(pd3dDevice, L"Effect.fx", "PSTexturedColor", "ps_4_0", &m_pd3dPixelShader);
-}
-void CTexturedShader::BuildObjects(ID3D11Device *pd3dDevice)
-{
-	//텍스쳐 맵핑에 사용할 샘플러 상태 객체를 생성한다.
-	ID3D11SamplerState *pd3dSamplerState = NULL;
-	D3D11_SAMPLER_DESC d3dSamplerDesc;
-	ZeroMemory(&d3dSamplerDesc, sizeof(D3D11_SAMPLER_DESC));
-	d3dSamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	d3dSamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	d3dSamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	d3dSamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	d3dSamplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-	d3dSamplerDesc.MinLOD = 0;
-	d3dSamplerDesc.MaxLOD = 0;
-	pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &pd3dSamplerState);
-
-	/*직육면체에 맵핑할 텍스쳐 객체를 생성한다. 이미지 파일은 어떤 이미지라도 상관없으므로 적당한 파일의 이름을 사용하라.*/
-	ID3D11ShaderResourceView *pd3dTexture = NULL;
-	CTexture **ppTextures = new CTexture*[3];
-	ppTextures[0] = new CTexture(1);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data\\Stone01.jpg"), NULL, NULL, &pd3dTexture, NULL);
-	ppTextures[0]->SetTexture(0, pd3dTexture, pd3dSamplerState);
-	ppTextures[1] = new CTexture(1);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data\\Brick01.jpg"), NULL, NULL, &pd3dTexture, NULL);
-	ppTextures[1]->SetTexture(0, pd3dTexture, pd3dSamplerState);
-	ppTextures[2] = new CTexture(1);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data\\Wood01.jpg"), NULL, NULL, &pd3dTexture, NULL);
-	ppTextures[2]->SetTexture(0, pd3dTexture, pd3dSamplerState);
-
-	CMesh *pMeshTextured = new CTexturedCubeMesh(pd3dDevice, 12.0f, 12.0f, 12.0f);
-
-	//텍스쳐 맵핑된 직육면체와 조명과 텍스쳐 맵핑을 사용한 직육면체를 교대로 배치할 것이다.
-	int xObjects = 3, yObjects = 3, zObjects = 3, i = 0, nObjectTypes = 2;
-	m_nObjects = ((xObjects * 2) + 1) * ((yObjects * 2) + 1) * ((zObjects * 2) + 1);
-	m_ppObjects = new CObject*[m_nObjects];
-
-	float fxPitch = 12.0f * 1.7f;
-	float fyPitch = 12.0f * 1.7f;
-	float fzPitch = 12.0f * 1.7f;
-	CRotatingObject *pRotatingObject = NULL;
-	for (int x = -xObjects; x <= xObjects; x++)
-	{
-		for (int y = -yObjects; y <= yObjects; y++)
-		{
-			for (int z = -zObjects; z <= zObjects; z++)
-			{
-				pRotatingObject = new CRotatingObject();
-				pRotatingObject->SetMesh(pMeshTextured);
-				pRotatingObject->SetTexture(ppTextures[i % 3]);
-				pRotatingObject->MoveAbsolute((x*(fxPitch*nObjectTypes) + 0 * fxPitch), (y*(fyPitch*nObjectTypes) + 0 * fyPitch), (z*(fzPitch*nObjectTypes) + 0 * fzPitch));
-				pRotatingObject->SetRotationAxis(D3DXVECTOR3(0.0f, 1.0f, 0.0f));
-				pRotatingObject->SetRotationSpeed(10.0f*(i % 10));
-				m_ppObjects[i++] = pRotatingObject;
-			}
-		}
-	}
-
-	CreateShaderVariables(pd3dDevice);
-
-	delete[] ppTextures;
-}
 
 
 

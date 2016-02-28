@@ -43,15 +43,6 @@ private:
 
 
 
-class CTriangleMesh : public CMesh
-{
-public:
-	CTriangleMesh(ID3D11Device *pd3dDevice);
-	virtual ~CTriangleMesh();
-
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
-	virtual void CreateRasterizerState(ID3D11Device *pd3dDevice);
-};
 
 class CCubeMesh : public CMesh
 {

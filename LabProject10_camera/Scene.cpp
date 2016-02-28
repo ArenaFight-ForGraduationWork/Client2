@@ -19,15 +19,21 @@ CScene::~CScene()
 
 void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 {
-	m_nShaders = 2;
+	//m_nShaders = 2;
+	//m_ppShaders = new CShader*[m_nShaders];
+
+	//m_ppShaders[0] = new CTexturedShader();
+	//m_ppShaders[0]->CreateShader(pd3dDevice);
+	//m_ppShaders[0]->BuildObjects(pd3dDevice);
+	//m_ppShaders[1] = new CIlluminatedTexturedShader();
+	//m_ppShaders[1]->CreateShader(pd3dDevice);
+	//m_ppShaders[1]->BuildObjects(pd3dDevice);
+	m_nShaders = 1;
 	m_ppShaders = new CShader*[m_nShaders];
 
-	m_ppShaders[0] = new CTexturedShader();
+	m_ppShaders[0] = new CIlluminatedTexturedShader();
 	m_ppShaders[0]->CreateShader(pd3dDevice);
 	m_ppShaders[0]->BuildObjects(pd3dDevice);
-	m_ppShaders[1] = new CIlluminatedTexturedShader();
-	m_ppShaders[1]->CreateShader(pd3dDevice);
-	m_ppShaders[1]->BuildObjects(pd3dDevice);
 
 	BuildLights(pd3dDevice);
 }
@@ -125,8 +131,8 @@ void CScene::BuildLights(ID3D11Device *pd3dDevice)
 	m_pLights->m_pLights[1].m_fTheta = (float)cos(D3DXToRadian(20.0f));
 	m_pLights->m_pLights[2].m_bEnable = 1.0f;
 	m_pLights->m_pLights[2].m_nType = DIRECTIONAL_LIGHT;
-	m_pLights->m_pLights[2].m_d3dxcAmbient = D3DXCOLOR(0.1f, 0.1f, 0.1f, 1.0f);
-	m_pLights->m_pLights[2].m_d3dxcDiffuse = D3DXCOLOR(0.1f, 0.1f, 0.1f, 1.0f);
+	m_pLights->m_pLights[2].m_d3dxcAmbient = D3DXCOLOR(0.8f, 0.8f, 0.8f, 1.0f);
+	m_pLights->m_pLights[2].m_d3dxcDiffuse = D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f);
 	m_pLights->m_pLights[2].m_d3dxcSpecular = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);
 	m_pLights->m_pLights[2].m_d3dxvDirection = D3DXVECTOR3(0.0f, -1.0f, 0.0f);
 
